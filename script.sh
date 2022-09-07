@@ -19,6 +19,7 @@ function import_region {
   done
 }
 
+#THIS ONLY WORKS IF THE SHELL SCRIPT FILE IS INSIDE factbook.json dir(still want to figure out if way to loop through directory
 for dir in */
 do 
   import_region ${dir}
