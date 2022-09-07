@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#link used: https://www.digitalocean.com/community/tutorials/how-to-configure-remote-access-for-mongodb-on-ubuntu-20-04
+#instead of binding ip to the tcp port, can also change bind_ip to 0.0.0.0
+
 MONGOIMPORT=mongoimport
 SOURCE=/root/factbook.json           # assume working folder (as root)
 
