@@ -12,15 +12,14 @@ function import_file {
 }
 
 function import_region {
-  for file in ${SOURCE}/$1/*.json
+  for file in $1/*.json
   do
-    echo ${file}
     import_file ${file}
   done
 }
 
-#THIS ONLY WORKS IF THE SHELL SCRIPT FILE IS INSIDE factbook.json dir(still want to figure out if way to loop through directory
-for dir in */
+#THIS ALLOWS ME TO LITERALLY PUT THE SCRIPT ANYWHERE! ${SOURCE}/* will loop through all subdirectories
+for dir in ${SOURCE}/*
 do 
   import_region ${dir}
 done
