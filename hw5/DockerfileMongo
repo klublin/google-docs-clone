@@ -1,0 +1,7 @@
+FROM mongo
+COPY factbook /lib/
+COPY script.sh /docker-entrypoint-initdb.d
+
+#I copied into tmp, think reason is because root isn't initlaized so the factbook.json doesn't get there fast 
+#enough. "shrug" idrk, but anyways, script.sh is copied into that specific directory because it is automatically 
+#ran when docker container starts up, pretty neat
