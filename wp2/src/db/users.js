@@ -17,17 +17,24 @@ const UserSchema = new Schema({
   key: {
     type: String
   },
+  verified: {
+    type: Boolean
+  },
   games: [{
     board: {
         id: {
             type: Number,
         },
         start_date: {
-            type: String,
+            type: String
         },
         grid: {
           type: [String]
-        }
+        },
+        winner: {
+          type: String
+        },
+        createdAt: Date
     }
   }],
 });
