@@ -54,8 +54,7 @@ app.post('/adduser', async (req,res) => {
             verified: false,
             games: []
         });
-        let link ='http://thebadbeginning.cse356.compas.cs.stonybrook.edu/verify?email=' + encodeURIComponent(req.body.email) + '&key=' + encodeURIComponent(verify);
-        console.log(link);  
+        let link ='http://thebadbeginning.cse356.compas.cs.stonybrook.edu/verify?email=' + encodeURIComponent(req.body.email) + '&key=' + encodeURIComponent(verify); 
         transporter.sendMail({
           to: req.body.email,
           from: 'Kevin <root@thebadbeginning.cse356.compas.cs.stonybrook.edu>',
@@ -68,7 +67,6 @@ app.post('/adduser', async (req,res) => {
 })
 
 app.get('/verify', async(req,res) => {
-  console.log(req.query);
   let checkDB = await User.findOne({key: req.query.key});
   if(checkDB===null){
     res.send({status: "ERROR"});
@@ -82,10 +80,8 @@ app.get('/verify', async(req,res) => {
 
 app.post('/login', async(req,res)=>{
   const checkValidUser = await User.findOne({username: req.body.username});
-  console.log(checkValidUser);
   if(checkValidUser!==null){
     if(checkValidUser.password!==req.body.password){
-      console.log(checkValidUser.password);
       res.json({status: "ERROR"});
     }
     else{
@@ -110,23 +106,42 @@ app.post('/logout', async(req,res)=>{
   res.json({status: "OK"});
 })
 
+function checkWinner(grid){
+  let winner = " ";
+  if(grid[0]==grid[1] && grid[1]==grid[2])
+    winner = grid[0];
+  else if(grid[3]==grid[4] && grid[4]==grid[5])
+    winner = grid[3];
+  else if(grid[6]==grid[7] && grid[7]==grid[8])
+    winner = grid[6];
+  else if(grid[0]==grid[3] && grid[3]==grid[6])
+    winner = grid[0];
+  else if(grid[1]==grid[4] && grid[4]==grid[7])
+    winner = grid[1];
+  else if(grid[2]==grid[5] && grid[5]==grid[8])
+    winner = grid[2];
+  else if(grid[0]==grid[4] && grid[4]==grid[8])
+    winner = grid[0];
+  else if(grid[2]==grid[4] && grid[4]==grid[6])
+    winner = grid[2];
+  
+  return winner;
+}
 app.post('/ttt/play', async(req,res)=>{
+  console.log(req.body);
   let username = req.cookies.username;
   let password = req.cookies.password;
-  console.log(username);
-  console.log(password);
   if(!username || !password){
+    console.log("bye");
     res.json({status : "ERROR"});
+    return;
   }
   
   let user = await User.findOne({username: username});
 
-  //everything with a value is false
-  console.log(user);
 
   let index = req.body.move;
   if(user.games.length==0){
-    console.log("HI WHATS UP");
     let obj={
       grid: [" "," "," "," "," "," "," "," "," "],
       winner: " ",
@@ -135,8 +150,19 @@ app.post('/ttt/play', async(req,res)=>{
     user.games.push(obj);
     await user.save();
   }
-  console.log(user);
   let n = user.games.length;
+
+  if(user.games[n-1].winner!=" "){
+    let obj={
+      grid: [" "," "," "," "," "," "," "," "," "],
+      winner: " ",
+      createdAt: new Date()
+    }
+    user.games.push(obj);
+    await user.save();
+  }
+
+
   let grid = user.games[n-1].grid;
 
   if(index === null){
@@ -145,45 +171,60 @@ app.post('/ttt/play', async(req,res)=>{
       grid: grid,
       winner: user.games[n-1].winner
     });
+    return;
   }
 
-  let winner = "";
+  let winner = " ";
 
   if(grid[index]==" "){
-    console.log("i'm in here dog");
     grid[index]='X';
+    await user.save();
 
-    if(grid[0]==grid[1] && grid[1]==grid[2])
-      winner = grid[0];
-    if(grid[3]==grid[4] && grid[4]==grid[5])
-      winner = grid[3];
-    if(grid[6]==grid[7] && grid[7]==grid[8])
-      winner = grid[6];
-    if(grid[0]==grid[3] && grid[3]==grid[5])
-      winner = grid[0];
-    if(grid[1]==grid[4] && grid[4]==grid[7])
-      winner = grid[1];
-    if(grid[2]==grid[5] && grid[5]==grid[8])
-      winner = grid[2];
-    if(grid[0]==grid[4] && grid[4]==grid[8])
-      winner = grid[0];
-    if(grid[2]==grid[4] && grid[4]==grid[6])
-      winner = grid[2];
-    
+    winner = checkWinner(grid);
     if(winner!=" "){
-      user.games[n-1].winner = winner;
+      user.games[n-1].winner = 'X';
       await user.save();
-    } 
-    else{
-      for(let i = 0; i<9; i++){
-        if(grid!=""){
-          grid[i]='O';
-          await user.save();
-          break;
-        }
+
+      res.json({
+        status: "OK",
+        grid: grid,
+        winner: winner
+      });
+      return;
+    };
+    
+    
+    for(let i = 0; i<9; i++){
+      if(grid[i]==" "){
+        grid[i]='O';
+        await user.save();
+        break;
+      }
+    }
+    winner = checkWinner(grid);
+    if(winner!=" "){
+      user.games[n-1].winner = 'O';
+      await user.save();
+
+      res.json({
+        status: "OK",
+        grid: grid,
+        winner: winner
+      });
+      return;
+    }
+
+    for(let i = 0; i<9;i++){
+      if(grid[i]==' ')
+        break;
+      if(i==8 && grid[i]!=' '){
+        winner = 'T';
+        user.games[n-1].winner = 'T';
+        await user.save();
       }
     } 
-    console.log("see ya later alligator");
+    
+    console.log(grid.toString());  
     res.json({
       status: "OK",
       grid: grid,
@@ -191,7 +232,6 @@ app.post('/ttt/play', async(req,res)=>{
     })
   }
   else{
-    console.log("j checkin");
     res.json({
       status: "ERROR",
       grid: grid,
@@ -213,12 +253,6 @@ app.post('/listgames', async (req,res)=>{
   }
 
   let boards = [];
-
-  console.log(user.games);
-
-  console.log(user.games.length);
-
-  console.log(user.games.grid);
   for(let i = 0; i<user.games.length;i++){
     let temp = {i : user.games.createdAt};
     boards.push(temp);
@@ -239,20 +273,26 @@ app.post('/getgame', async(req,res) => {
   
   let user = await User.findOne({username: username});
 
+
+  console.log(user);
+
   if(user===null){
     res.json({status: "ERROR"});
   }
 
   let id = req.body.id;
+  console.log(req.body);
   
-  if(id>User.games.length){
+  if(id>user.games.length){
     res.json({status: "ERROR"});
   }
   else{
+    let n = user.games.length;
+    console.log(user.games);
     let response = {
       status: "OK",
-      grid: User.games.grid[id],
-      winner: User.games.winner
+      grid: user.games[n-1].grid,
+      winner: user.games.winner
     }
 
     res.json(response);
@@ -260,7 +300,7 @@ app.post('/getgame', async(req,res) => {
 
 
 })
-app.post('getscore', async(req,res)=>{
+app.post('/getscore', async(req,res)=>{
   let username = req.cookies.username;
   
   let user = await User.findOne({username: username});
@@ -272,14 +312,14 @@ app.post('getscore', async(req,res)=>{
   let wopr = 0;
   let ties = 0;
   
-  for(let i = 0; i<User.games.length; i++){
-    if(User.games[i].winner == 'X'){
+  for(let i = 0; i<user.games.length; i++){
+    if(user.games[i].winner == 'X'){
       human++;
     }
-    else if(User.games[i].winner == 'O'){
+    else if(user.games[i].winner == 'O'){
       wopr++;
     }
-    else if(User.games[i].winner == 'T'){
+    else if(user.games[i].winner == 'T'){
       ties++;
     }
   }
@@ -288,10 +328,10 @@ app.post('getscore', async(req,res)=>{
     status: 'OK',
     human: human,
     wopr: wopr,
-    ties: ties
+    tie: ties
   };
-
-  res.json(reponse);
+  console.log(response);
+  res.json(response);
 
 })
 
