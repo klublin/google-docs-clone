@@ -22,14 +22,9 @@ const UserSchema = new Schema({
   },
   games: [{
     board: {
-        id: {
-            type: Number,
-        },
-        start_date: {
-            type: String
-        },
         grid: {
-          type: [String]
+          type: [String],
+          default: ["","","","","","","","",""]
         },
         winner: {
           type: String
