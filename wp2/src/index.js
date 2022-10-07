@@ -1,5 +1,5 @@
 const mail = require('nodemailer');
-const apiKey = require('generate-api-key');
+const uuid = require('uuid');
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
@@ -45,20 +45,19 @@ app.post('/adduser', async (req,res) => {
         res.json({status: "ERROR"});
     }
     else{
-        //let verify = apiKey.generateApiKey();
-        let verify = "DTRnEb8jfdAFDsl4Gsoq.~Qx_7W";
-        console.log(verify);
+        let verify = uuid.v4();
         const newUser = await User.create({
             username: req.body.username,
             password: req.body.password,
             email: req.body.email,
             key: verify,
-            verifid: false
+            verified: false,
+            games: []
         });
         let link ='http://thebadbeginning.cse356.compas.cs.stonybrook.edu/verify?email=' + encodeURIComponent(req.body.email) + '&key=' + encodeURIComponent(verify);
         console.log(link);  
         transporter.sendMail({
-          to: "seabook02@hotmail.com",
+          to: req.body.email,
           from: 'Kevin <root@thebadbeginning.cse356.compas.cs.stonybrook.edu>',
           subject: 'Verification email',
           text: link
@@ -87,64 +86,71 @@ app.post('/login', async(req,res)=>{
   if(checkValidUser!==null){
     if(checkValidUser.password!==req.body.password){
       console.log(checkValidUser.password);
-      return res.json({status: "ERROR"});
+      res.json({status: "ERROR"});
     }
     else{
       if(checkValidUser.verified){
-        res.cookie('username',req.body.username).send('cookie set');
-        res.cookie('password', req.body.password).send('cookie set');
-        return res.json({status:"OK"});
+        res.cookie('username', req.body.username);
+        res.cookie('password', req.body.password);
+        res.json({status:"OK"});
       }
       else{
-        return res.json({status: "ERROR"});
+        res.json({status: "ERROR"});
       }
     }
   }
   else{
-    return res.json({status: "ERROR"});
+    res.json({status: "ERROR"});
   }
 })
 app.post('/logout', async(req,res)=>{
   res.clearCookie('username');
   res.clearCookie('password');
+
+  res.json({status: "OK"});
 })
 
 app.post('/ttt/play', async(req,res)=>{
   let username = req.cookies.username;
   let password = req.cookies.password;
-
-  if(username === null || password === null){
+  console.log(username);
+  console.log(password);
+  if(!username || !password){
     res.json({status : "ERROR"});
   }
   
-  let user = User.findOne({username: username});
+  let user = await User.findOne({username: username});
 
   //everything with a value is false
+  console.log(user);
 
   let index = req.body.move;
-
-  int n = users.games.length;
-  if(n==0){
-    let obj = {
-      grid: ["","","","","","","","",""],
-      winner: "",
+  if(user.games.length==0){
+    console.log("HI WHATS UP");
+    let obj={
+      grid: [" "," "," "," "," "," "," "," "," "],
+      winner: " ",
       createdAt: new Date()
     }
     user.games.push(obj);
+    await user.save();
   }
-  let grid = user.games[n-1].board.grid;
+  console.log(user);
+  let n = user.games.length;
+  let grid = user.games[n-1].grid;
 
   if(index === null){
     res.json({
       status: "OK",
       grid: grid,
-      winner: user.games[n-1].board.winner
+      winner: user.games[n-1].winner
     });
   }
 
   let winner = "";
-  //if undefined(no value) then it is open space, else error
-  if(!grid[index]){
+
+  if(grid[index]==" "){
+    console.log("i'm in here dog");
     grid[index]='X';
 
     if(grid[0]==grid[1] && grid[1]==grid[2])
@@ -164,16 +170,9 @@ app.post('/ttt/play', async(req,res)=>{
     if(grid[2]==grid[4] && grid[4]==grid[6])
       winner = grid[2];
     
-    if(winner!=""){
-      user.games[n-1].board.winner = winner;
+    if(winner!=" "){
+      user.games[n-1].winner = winner;
       await user.save();
-
-      let obj = {
-        grid: ["","","","","","","","",""],
-        winner: "",
-        createdAt: new Date()
-      }
-      user.games.push(obj);
     } 
     else{
       for(let i = 0; i<9; i++){
@@ -184,13 +183,20 @@ app.post('/ttt/play', async(req,res)=>{
         }
       }
     } 
+    console.log("see ya later alligator");
     res.json({
       status: "OK",
       grid: grid,
       winner: winner
+    })
   }
   else{
-    res.json({status: "ERROR"});
+    console.log("j checkin");
+    res.json({
+      status: "ERROR",
+      grid: grid,
+      winner: winner
+    });
   }
 })
 
@@ -208,8 +214,13 @@ app.post('/listgames', async (req,res)=>{
 
   let boards = [];
 
+  console.log(user.games);
+
+  console.log(user.games.length);
+
+  console.log(user.games.grid);
   for(let i = 0; i<user.games.length;i++){
-    let temp = {i: user.games.board.createdAt};
+    let temp = {i : user.games.createdAt};
     boards.push(temp);
   }
 

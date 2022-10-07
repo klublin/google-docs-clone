@@ -21,16 +21,13 @@ const UserSchema = new Schema({
     type: Boolean
   },
   games: [{
-    board: {
-        grid: {
-          type: [String],
-          default: ["","","","","","","","",""]
-        },
-        winner: {
-          type: String
-        },
-        createdAt: Date
-    }
+    grid: {
+      type: [String]
+    },
+    winner: {
+      type: String,
+    },
+    createdAt: Date
   }],
 });
 
