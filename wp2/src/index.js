@@ -254,7 +254,7 @@ app.post('/listgames', async (req,res)=>{
 
   let boards = [];
   for(let i = 0; i<user.games.length;i++){
-    let temp = {i : user.games.createdAt};
+    let temp = {i : user.games[i].createdAt};
     boards.push(temp);
   }
 
