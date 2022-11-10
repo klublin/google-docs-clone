@@ -11,7 +11,7 @@ app.use(bodyParser.json())
 const map = {};
 
 
-connectApi = (req,res) => {
+connect = (req,res) => {
     const headers = {
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
@@ -37,7 +37,7 @@ connectApi = (req,res) => {
     res.write('event: sync\ndata: ' + `${string}\n\n`);
 }
 
-addCharacter = (req,res) => { 
+op = (req,res) => { 
     let arr = map[req.params.id].clients;
     Y.applyUpdate(map[req.params.id].doc, Uint8Array.from(req.body));
     let string = JSON.stringify(req.body);
@@ -47,8 +47,13 @@ addCharacter = (req,res) => {
     res.status(200).send("update posted");
 }
 
+presence = (req,res) => {
+
+}
+
 
 module.export ={
-    connectApi,
-    addCharacter
+    connect,
+    op,
+    presence
 }

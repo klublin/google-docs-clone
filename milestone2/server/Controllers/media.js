@@ -11,21 +11,16 @@ app.use(bodyParser.json())
 const map = {};
 
 
-create = (req,res) => {
+upload = (req,res) => {
 
 }
 
-delete = (req,res) => {
-
-}
-
-list = (req,res) => {
+access = (req,res) => {
 
 }
 
 
 module.export ={
-    create, 
-    delete, 
-    list
+    upload,
+    access
 }
