@@ -1,18 +1,11 @@
-const express = require('express')
 const nodeMailer = require('nodemailer');
 const uuid = require('uuid')
-const app = express();
-const cors = require('cors')
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
 const User = require('../models/Users')
-
-app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+const sessions = require('express-session');
 
 
-signup = (req,res) => {
+signup = async (req,res) => {
     const emailCheck = await User.findOne({email: req.body.email});
 
     if(!emailCheck){
@@ -29,10 +22,10 @@ signup = (req,res) => {
         verified: false
     })
 
-    let link = ;
+    let link ="" ;
     transporter.sendMail({
         to: req.body.email,
-        from: ,
+        from: "",
         subject: 'Verification email',
         text: link
     });
@@ -40,29 +33,26 @@ signup = (req,res) => {
     res.status(200).json({});
 }
 
-login = (req, res) => {
-    let verify = User.findOne({key: req.body.email});
+login = async (req, res) => {
+    let verify = await User.findOne({key: req.body.email});
     if(!verify || verify.password!= req.body.email || !verify.verified){
         res.status(200).json({error: true, message: "incorrect credentials"});
         return;
     }
 
-    res.cookie('name', verify.name);
-    res.cookie('password', verify.password);
-    res.cookie('email', verify.email);
+    let session = req.session;
+    session.email = req.body.email;
 
     res.status(200).json({name: verify.name});
 }
 
 logout = (req, res) => {
-    res.clearCookie('name');
-    res.clearCookie('password');
-    res.clearCookie('email');
+    req.session.destroy();
     
     res.status(200).json({});
 }
 
-verify = (req, res) => {
+verify = async (req, res) => {
     let checkDB = await User.findOne({key: req.query.key});
     if(!checkDB){
       res.status.json({error: true, message: "cannot find the user"});
@@ -77,7 +67,7 @@ verify = (req, res) => {
 }
 
 
-module.export ={
+module.exports ={
     signup, 
     login, 
     logout,

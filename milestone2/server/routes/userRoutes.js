@@ -7,4 +7,4 @@ router.post('/login', user.login);
 router.post('/logout', user.logout);
 router.get('/verify', user.verify);
 
-modules.export = router;
+module.exports = router;

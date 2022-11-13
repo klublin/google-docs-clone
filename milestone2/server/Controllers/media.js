@@ -1,13 +1,3 @@
-const express = require('express')
-const Y = require('yjs')
-const app = express();
-const cors = require('cors')
-const bodyParser = require('body-parser')
-
-app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-
 const map = {};
 
 
@@ -20,7 +10,7 @@ access = (req,res) => {
 }
 
 
-module.export ={
+module.exports ={
     upload,
     access
 }

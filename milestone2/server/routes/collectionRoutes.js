@@ -3,8 +3,8 @@ const router = express.Router()
 const collections = require('../Controllers/collection')
 
 
-router.post('/create', collections.create);
-router.post('/delete', collections.delete);
-router.get('/list', collections.list);
+router.post('/create', collections.createDoc);
+router.post('/delete', collections.deleteDoc);
+router.get('/list', collections.listDocuments);
 
-modules.export = router;
+module.exports = router;
