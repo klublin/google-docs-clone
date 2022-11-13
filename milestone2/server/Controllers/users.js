@@ -39,7 +39,6 @@ login = async (req, res) => {
     //     res.status(200).json({error: true, message: "incorrect credentials"});
     //     return;
     // }
-
     let session = req.session;
     session.email = req.body.email;
 

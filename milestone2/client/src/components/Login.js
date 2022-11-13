@@ -3,10 +3,12 @@ import {useNavigate} from 'react-router-dom';
 
 
 export default function LoginScreen(){
-    const [user, setUser] = useState();
-    const [password, setPassword] = useState();
+    const [user, setUser] = useState("");
+    const [password, setPassword] = useState("");
     const nav = useNavigate();
+
     function handleSubmit(){
+        console.log("i'm still firing");
         let data ={
             user: user,
             password: password
@@ -14,12 +16,14 @@ export default function LoginScreen(){
         fetch("http://localhost:3001/users/login", {
             method: "POST",
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
         })
         .then(response => response.JSON())
         .then((data) => {
+            console.log(data);
             if(!data.error){
                 nav("/home");
             }
@@ -27,33 +31,31 @@ export default function LoginScreen(){
                 setUser("");
                 setPassword("");
             }
-        });
+        })
+        .catch(error => console.log(error));
     }
 
     return (
         <div id="login-form">
-            <form 
-                onSubmit={handleSubmit}
-            >
-            <label htmlFor="user">Username:
-            <input 
-                type="text" 
-                id="username" 
-                name="username"
-                value={user}
-                onChange={(e) => setUser(e.target.value)}
+            <div>
+            <label>
+            Email:
+                <input 
+                    type="text" 
+                    value={user}
+                    onChange={(e) => setUser(e.target.value)}
                 />
             </label>
-            <label htmlFor="pass">Password:
-            <input 
-                type="text" 
-                id="password" 
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}/>
+            <label>
+            Password:
+                <input 
+                    type="text" 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
             </label>
-            <input type="submit" value = "submit"/>
-            </form> 
+            <input type="button" value = "submit" onClick={handleSubmit}/>
+            </div>
         </div>
     )
 }

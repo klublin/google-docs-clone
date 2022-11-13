@@ -23,7 +23,6 @@ app.use(session({
 
 const apiRouter = require('./routes/apiRoutes.js');
 app.use('/api', apiRouter)
-
 const userRouter = require('./routes/userRoutes.js');
 app.use('/users', userRouter);
 
