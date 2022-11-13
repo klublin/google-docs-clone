@@ -1,16 +1,17 @@
 const Y = require('yjs');
 const docMap = new Map();
-const top10 = require('./top10list');
+const top10 = require('./top10List');
 let id = 0;
 
 docAdd = (name) => {
+    const document = new Y.Doc();
     let obj = {
         name: name,
-        doc: new Y.doc()
+        doc: document
     };
     docMap.set(id, obj);
     
-    top10.add(id, name);
+    top10.listAdd(id, name);
     
     let temp = id;
     id++;
@@ -18,7 +19,7 @@ docAdd = (name) => {
 }
 
 docDelete = (id) => {
-    top10.delete(id);
+    top10.listDelete(id);
 
     return docMap.delete(id);
 }

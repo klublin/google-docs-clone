@@ -1,4 +1,5 @@
 import React from 'react'
+import './App.css';
 import TextEditor from './components/TextEditor.js'
 import FrontPage from './components/FrontPage.js'
 import Home from './components/Home.js'

@@ -5,6 +5,10 @@ const session = require('express-session')
 const redisStore = require('connect-redis')(session);
 const client  = redis.createClient();
 
+client.connect().then(()=>{
+    console.log("connected to Redis!");
+});
+
 // CREATE OUR SERVER
 const app = express()
 app.use(cors())
@@ -15,11 +19,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.set('trust proxy', true);
 app.use(session({
-    secret: 'IHateThisClass10982374',
-    store: new redisStore({ host: 'localhost', port: 6379, client: client,ttl : 260}),
-    resave: false,
-    saveUninitialized: true
-}))
+    secret: 'IHATETHISCLASS1023847&',
+    // create new redis store.
+    store: new redisStore({ host: 'localhost', port: 6379, client: client}),
+    saveUninitialized: false,
+    resave: false
+}));
+
 
 const apiRouter = require('./routes/apiRoutes.js');
 app.use('/api', apiRouter)
@@ -27,7 +33,7 @@ const userRouter = require('./routes/userRoutes.js');
 app.use('/users', userRouter);
 
 const collectionRouter = require('./routes/collectionRoutes.js');
-app.use('/collections', collectionRouter);
+app.use('/collection', collectionRouter);
 
 const mediaRouter = require('./routes/mediaRoutes');
 app.use('/media', mediaRouter);

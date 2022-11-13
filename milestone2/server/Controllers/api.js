@@ -32,7 +32,8 @@ connect = (req,res) => {
         let arr = map[req.params.id].clients;
         arr.splice(arr.indexOf(res), 1);
     })
-    let string = JSON.stringify(Array.from(Y.encodeStateAsUpdate(docMap.getDoc(req.params.id))));
+    let state = docMap.getDoc(req.params.id);
+    let string = JSON.stringify(Array.from(Y.encodeStateAsUpdate(state)));
     res.write('event: sync\ndata: ' + `${string}\n\n`);
 }
 

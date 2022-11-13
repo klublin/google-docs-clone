@@ -29,7 +29,7 @@ export default function TextEditor() {
 
         new QuillBinding(ytext, d);
         ydoc.on('update', update => {
-            fetch(`http://localhost:3001/api/op/${id}`, {
+            fetch(`http://209.151.148.64:3001/api/op/${id}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -43,7 +43,7 @@ export default function TextEditor() {
         if(doc === undefined ){
             return;
         }
-        const events = new EventSource(`http://localhost:3001/api/connect/${id}`)
+        const events = new EventSource(`http://209.151.148.64:3001/api/connect/${id}`)
         events.addEventListener('sync', (event) =>{
             let obj = JSON.parse(event.data);
             obj = Uint8Array.from(obj);

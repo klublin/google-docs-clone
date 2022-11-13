@@ -22,10 +22,10 @@ signup = async (req,res) => {
         verified: false
     })
 
-    let link ="" ;
+    let link = "";
     transporter.sendMail({
         to: req.body.email,
-        from: "",
+        from: "root@milestone2",
         subject: 'Verification email',
         text: link
     });

@@ -1,11 +1,13 @@
 import React, {useState} from 'react'
 import DocumentCards from './DocumentCards.js'
+import {useNavigate} from 'react-router-dom'
 
 export default function Home(){
     let [list, setList] = useState();
-
+    let [docName, setDocName] = useState("");
+    const nav = useNavigate();
     function loadList(){
-        fetch(`http://localhost:3001/collection/list`, {
+        fetch(`http://209.151.148.64:3001/collection/list`, {
             method: 'GET'
         })
         .then( res => res.json())
@@ -13,26 +15,49 @@ export default function Home(){
             setList(data);
         })
     }
-    if(list === null){
+    if(list === null || list === undefined){
         loadList();
     }
-    function createDocument(){
-
+    function handleLogout(){
+        fetch(`http://209.151.148.64:3001/collection/list`, {
+            method: 'POST'
+        })
+        .then(console.log("logging out"));
+        nav('/');
+    }
+    function createDocument(event){
+        fetch(`http://209.151.148.64:3001/collection/create`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name: docName})
+        })
+        .then((response) => response.json())
+        .then(() => {
+            loadList();
+            setDocName("");
+        });
     }
     function handleRemove(event){
-        fetch("http://localhost:3001/collection/delete", {
+        fetch("http://209.151.148.64:3001/collection/delete", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(event.target.id)
+            body: JSON.stringify({id: event.target.id})
+        }).then(()=>{
+            console.log("i'm in here?");
+            loadList();
         })
     }
     let documents="";
     if(list){
         documents = list.map((pair, index) => {
             return <DocumentCards
-                id={pair.id}
+                key={pair.id}
+                documentId={pair.id}
                 name={pair.name}
                 index={index}
                 removeDoc={handleRemove}
@@ -41,17 +66,28 @@ export default function Home(){
     }
     return(
         <div id="document-list-header">
+            <div>
+            <label>
+                New Document Name: 
+            <input
+                type="text"
+                id={"add-document"}
+                value={docName}
+                onChange={(e) => setDocName(e.target.value)}
+            />
+            </label>
             <input
                 type="button"
-                id={"add-document"}
-                value={"+"}
+                id="submit-new-doc-name"
+                value="add"
                 onClick={createDocument}
             />
+            </div>
             <input 
                 type="button"
                 id={"logout-button"}
                 value={"logout"}
-                onClick={"handleLogout"}
+                onClick={handleLogout}
             />
             <div id="document-list">
             {documents}

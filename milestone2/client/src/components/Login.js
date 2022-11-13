@@ -13,7 +13,7 @@ export default function LoginScreen(){
             user: user,
             password: password
         };
-        fetch("http://localhost:3001/users/login", {
+        fetch("http://209.151.148.64:3001/users/login", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -21,7 +21,7 @@ export default function LoginScreen(){
             },
             body: JSON.stringify(data)
         })
-        .then(response => response.JSON())
+        .then((response) => response.json())
         .then((data) => {
             console.log(data);
             if(!data.error){

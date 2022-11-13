@@ -4,15 +4,17 @@ const list = require('../db/top10List');
 
     
 createDoc = (req,res) => {
+    console.log("PLEASE MAN");
+    console.log(req.body);
     let {name} = req.body;
     
-    let id = docMap.add(name);
+    let id = docMap.docAdd(name);
     res.status(200).json({id});
 }
 
 deleteDoc = (req,res) => {
     let {id} = req.body
-    let check = docMap.delete(id);
+    let check = docMap.docDelete(id);
     if(!check){
         res.status(200).json({error: true, message: "doc does not exist"});
     }

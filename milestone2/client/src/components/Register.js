@@ -16,7 +16,7 @@ export default function RegisterScreen(){
             password: password,
             email: email
         }
-        fetch("http://localhost:3001/users/signup", {
+        fetch("http://209.151.148.64:3001/users/signup", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'

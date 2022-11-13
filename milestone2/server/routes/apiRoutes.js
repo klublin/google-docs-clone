@@ -3,9 +3,9 @@ const router = express.Router()
 const api = require('../Controllers/api.js')
 
 
-router.get('/connect', api.connect);
-router.post('/op', api.op);
-router.post('/presence', api.presence);
+router.get('/connect/:id', api.connect);
+router.post('/op/:id', api.op);
+router.post('/presence/:id', api.presence);
 
 
 module.exports = router;
