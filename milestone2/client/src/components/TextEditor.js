@@ -29,7 +29,6 @@ export default function TextEditor() {
 
         new QuillBinding(ytext, d);
         ydoc.on('update', update => {
-            console.log("a");
             fetch(`http://localhost:3001/api/op/${id}`, {
                 method: 'POST',
                 headers: {
@@ -54,6 +53,9 @@ export default function TextEditor() {
             let obj = JSON.parse(event.data);
             obj = Uint8Array.from(obj);  
             Y.applyUpdate(doc, obj);
+        })
+        events.addEventListener('presence', (event) => {
+            console.log("hi");
         })
     },[doc])
     return <div id = "container" ref={wrapperRef}></div>

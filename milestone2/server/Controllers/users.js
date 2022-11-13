@@ -34,11 +34,11 @@ signup = async (req,res) => {
 }
 
 login = async (req, res) => {
-    let verify = await User.findOne({key: req.body.email});
-    if(!verify || verify.password!= req.body.email || !verify.verified){
-        res.status(200).json({error: true, message: "incorrect credentials"});
-        return;
-    }
+    // let verify = await User.findOne({key: req.body.email});
+    // if(!verify || verify.password!= req.body.email || !verify.verified){
+    //     res.status(200).json({error: true, message: "incorrect credentials"});
+    //     return;
+    // }
 
     let session = req.session;
     session.email = req.body.email;
