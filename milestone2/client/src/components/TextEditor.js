@@ -4,11 +4,12 @@ import Quill from "quill"
 import "quill/dist/quill.snow.css"
 import * as Y from 'yjs'
 import { QuillBinding } from 'y-quill'
+import QuillCursors from 'quill-cursors';
 
 //THINK WHY NOT CHANGE B/C IT IS NOT CORRECT TYPE
 export default function TextEditor() {
     let [ doc, setDoc ] = useState();
-
+    let [cursor, setCursor] = useState();   
     let { id } = useParams();
     const TOOLBAR_OPTIONS = [
         [{ header: [1, 2, false] }],
@@ -21,16 +22,17 @@ export default function TextEditor() {
         wrapper.innerHTML = "";
         const editor = document.createElement("div");
         wrapper.append(editor);
-        
+        Quill.register('modules/cursors', QuillCursors);    
         const ydoc = new Y.Doc()
         setDoc(ydoc);
         const ytext = ydoc.getText('quill') 
-        const d = new Quill(editor, {theme: "snow", modules: {toolbar: TOOLBAR_OPTIONS}});
+        const d = new Quill(editor, {theme: "snow", modules: {cursors: true, toolbar: TOOLBAR_OPTIONS}});
 
         new QuillBinding(ytext, d);
         ydoc.on('update', update => {
-            fetch(`http://209.151.148.64:3001/api/op/${id}`, {
+            fetch(`http://kevwei.cse356.compas.cs.stonybrook.edu:3001/api/op/${id}`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
@@ -38,12 +40,28 @@ export default function TextEditor() {
                 body: JSON.stringify(Array.from(update))
             });
         })
+        const c = d.getModule('cursors');
+        console.log(c);
+        setCursor(c);
+        d.on('selection-change', function(range, oldRange, source) {
+            if(range!=oldRange){
+                fetch(`http://kevwei.cse356.compas.cs.stonybrook.edu:3001/api/presence/${id}`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(range)
+                })
+            }
+        })
     },[])
     useEffect(()=>{
         if(doc === undefined ){
             return;
         }
-        const events = new EventSource(`http://209.151.148.64:3001/api/connect/${id}`)
+        const events = new EventSource(`http://kevwei.cse356.compas.cs.stonybrook.edu:3001/api/connect/${id}`)
         events.addEventListener('sync', (event) =>{
             let obj = JSON.parse(event.data);
             obj = Uint8Array.from(obj);
@@ -55,8 +73,13 @@ export default function TextEditor() {
             Y.applyUpdate(doc, obj);
         })
         events.addEventListener('presence', (event) => {
-            console.log("hi");
+            let obj = JSON.parse(event.data);
+            console.log(obj.id);
+            cursor.createCursor('cursor'+obj.id, obj.id, 'red');
+            cursor.moveCursor('cursor' + obj.id, obj.cursor);
+            cursor.update();
         })
     },[doc])
+
     return <div id = "container" ref={wrapperRef}></div>
 }

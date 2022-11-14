@@ -4,7 +4,6 @@ const list = require('../db/top10List');
 
     
 createDoc = (req,res) => {
-    console.log("PLEASE MAN");
     console.log(req.body);
     let {name} = req.body;
     

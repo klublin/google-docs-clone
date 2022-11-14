@@ -4,10 +4,9 @@ const top10 = require('./top10List');
 let id = 0;
 
 docAdd = (name) => {
-    const document = new Y.Doc();
     let obj = {
         name: name,
-        doc: document
+        doc: new Y.Doc()
     };
     docMap.set(id, obj);
     
@@ -18,21 +17,23 @@ docAdd = (name) => {
     return temp;
 }
 
-docDelete = (id) => {
-    top10.listDelete(id);
+docDelete = (deleteID) => {
+    top10.listDelete(deleteID);
 
-    return docMap.delete(id);
+    return docMap.delete(Number(deleteID));
 }
 
-getName = (id) => {
-    return docMap.get(id).name;
+getName = (nameID) => {
+    return docMap.get(Number(nameID)).name;
 }
 
-getDoc = (id) => {
-    return docMap.get(id).doc;
+getDoc = (docID) => {
+    return docMap.get(Number(docID)).doc;
 }
 
 module.exports = {
     docAdd,
-    docDelete
+    docDelete,
+    getName,
+    getDoc
 }

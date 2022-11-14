@@ -22,7 +22,7 @@ signup = async (req,res) => {
         verified: false
     })
 
-    let link = "";
+    let link = "http://plzwork.cse356.compas.cs.stonybrook.edu/verify?email="+req.body.email +"&key=" + verify;
     transporter.sendMail({
         to: req.body.email,
         from: "root@milestone2",
@@ -34,14 +34,15 @@ signup = async (req,res) => {
 }
 
 login = async (req, res) => {
-    // let verify = await User.findOne({key: req.body.email});
-    // if(!verify || verify.password!= req.body.email || !verify.verified){
-    //     res.status(200).json({error: true, message: "incorrect credentials"});
-    //     return;
-    // }
+    let verify = await User.findOne({key: req.body.email});
+    if(!verify || verify.password!= req.body.email || !verify.verified){
+        res.status(200).json({error: true, message: "incorrect credentials"});
+        return;
+    }
+    console.log("HII???");
     let session = req.session;
-    session.email = req.body.email;
-
+    session.key = req.body.email;
+    console.log("i did get here though");
     res.status(200).json({name: verify.name});
 }
 

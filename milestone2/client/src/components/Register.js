@@ -16,8 +16,9 @@ export default function RegisterScreen(){
             password: password,
             email: email
         }
-        fetch("http://209.151.148.64:3001/users/signup", {
+        fetch("http://kevwei.cse356.compas.cs.stonybrook.edu:3001/users/signup", {
             method: "POST",
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
                 // 'Content-Type': 'application/x-www-form-urlencoded',

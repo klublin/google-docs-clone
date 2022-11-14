@@ -1,14 +1,6 @@
-const express = require('express')
 const Y = require('yjs')
-const app = express();
-const cors = require('cors')
-const bodyParser = require('body-parser')
 const docMap = require('../db/docMap');
 const list = require('../db/top10List');
-
-app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
 
 const map = {};
 
@@ -31,6 +23,9 @@ connect = (req,res) => {
     res.socket.on('end', function(res){
         let arr = map[req.params.id].clients;
         arr.splice(arr.indexOf(res), 1);
+        arr.forEach(client => {
+            client.write(`event: presence\ndata: {}\n\n`)
+        })
     })
     let state = docMap.getDoc(req.params.id);
     let string = JSON.stringify(Array.from(Y.encodeStateAsUpdate(state)));
@@ -39,7 +34,7 @@ connect = (req,res) => {
 
 op = (req,res) => { 
     let arr = map[req.params.id].clients;
-    Y.applyUpdate(docMap.get(req.params.id).doc, Uint8Array.from(req.body));
+    Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
     let string = JSON.stringify(req.body);
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
@@ -48,10 +43,11 @@ op = (req,res) => {
 }
 
 presence = (req,res) => {
+    console.log(req.body);
     let arr = map[req.params.id].clients;
     let string = {
         id: req.sessionID,
-        name: docMap.getName(id),
+        name: docMap.getName(req.params.id),
         cursor:{
             index : req.body.index,
             length : req.body.length
@@ -60,6 +56,7 @@ presence = (req,res) => {
     arr.forEach(client => {
         client.write(`event: presence\ndata: ${JSON.stringify(string)}\n\n`)
     })
+    res.status(200).json({});   
 }
 
 

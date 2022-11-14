@@ -13,8 +13,9 @@ export default function LoginScreen(){
             user: user,
             password: password
         };
-        fetch("http://209.151.148.64:3001/users/login", {
+        fetch("http://kevwei.cse356.compas.cs.stonybrook.edu:3001/users/login", {
             method: "POST",
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'

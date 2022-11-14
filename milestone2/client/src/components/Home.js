@@ -8,7 +8,8 @@ export default function Home(){
     const nav = useNavigate();
     function loadList(){
         fetch(`http://209.151.148.64:3001/collection/list`, {
-            method: 'GET'
+            method: 'GET',
+            credentials: 'include'
         })
         .then( res => res.json())
         .then( data => {
@@ -20,7 +21,8 @@ export default function Home(){
     }
     function handleLogout(){
         fetch(`http://209.151.148.64:3001/collection/list`, {
-            method: 'POST'
+            method: 'POST',
+            credentials: 'include'
         })
         .then(console.log("logging out"));
         nav('/');
@@ -28,6 +30,7 @@ export default function Home(){
     function createDocument(event){
         fetch(`http://209.151.148.64:3001/collection/create`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -43,6 +46,7 @@ export default function Home(){
     function handleRemove(event){
         fetch("http://209.151.148.64:3001/collection/delete", {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
