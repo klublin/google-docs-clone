@@ -31,9 +31,13 @@ app.use(session({
 }));
 
 function isAuthenticated (req, res, next) {
-    if (req.session.key) next()
+    if (req.session.key) {
+        next();
+    }
     else res.status(200).json({error: true, message: ""});
-  }
+}
+
+
 
 const apiRouter = require('./routes/apiRoutes.js');
 app.use('/api', isAuthenticated, apiRouter)
@@ -51,13 +55,24 @@ app.use(express.static("public"));
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname,'public/index.html'));
 })
-
-app.get('/home', (req,res) => {
-    if(req.cookie){
-        res.redirect('/');
+app.get('/edit/:id', (req,res) =>{
+    console.log(req.session);
+    if(req.session.cookie && req.session.key){
+        console.log("YAY!");
+        res.sendFile(path.join(__dirname,'public/index.html'));
     }
-    res.status(200).json({error: true, message: "cookies not set"});
-    
+    else{
+        console.log("pain pkeo??");
+        res.json({error: true, message: "cookies not set"})
+    }
+})
+app.get('/home', (req,res) => {
+    if(req.session.cookie){
+        res.sendFile(path.join(__dirname, 'public/index.html'));
+    }
+    else{
+        res.status(200).json({error: true, message: "cookies not set"});
+    } 
 })
 
 app.use('/library', express.static('dist'))

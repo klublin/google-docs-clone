@@ -29,6 +29,7 @@
     "webpack-obfuscator": "^3.5.1"
   },
   "dependencies": {
+    "quill-delta": "^5.0.0",
     "quill-delta-to-html": "^0.12.1",
     "yjs": "^13.5.42"
   }

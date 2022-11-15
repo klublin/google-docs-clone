@@ -4,7 +4,6 @@ const list = require('../db/top10List');
 
     
 createDoc = (req,res) => {
-    console.log(req.body);
     let {name} = req.body;
     
     let id = docMap.docAdd(name);
@@ -23,7 +22,6 @@ deleteDoc = (req,res) => {
 
 listDocuments = (req,res) => {
     let arr = list.toJson();
-    console.log(arr);
     res.status(200).json(arr);
 }
 

@@ -61,7 +61,9 @@ export default function TextEditor() {
         if(doc === undefined ){
             return;
         }
-        const events = new EventSource(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/api/connect/${id}`)
+        console.log(id);
+        console.log("YES I AM TRYING TO DO THIS STUFF");
+        const events = new EventSource(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/api/connect/${id}`, {withCredentials: true})
         events.addEventListener('sync', (event) =>{
             let obj = JSON.parse(event.data);
             obj = Uint8Array.from(obj);
@@ -74,9 +76,9 @@ export default function TextEditor() {
         })
         events.addEventListener('presence', (event) => {
             let obj = JSON.parse(event.data);
-            console.log(obj.id);
-            cursor.createCursor('cursor'+obj.id, obj.id, 'red');
-            cursor.moveCursor('cursor' + obj.id, obj.cursor);
+            console.log(obj.session_id);
+            cursor.createCursor('cursor'+obj.session_id, obj.session_id, 'red');
+            cursor.moveCursor('cursor' + obj.session_id, obj.cursor);
             cursor.update();
         })
     },[doc])

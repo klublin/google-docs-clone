@@ -7,7 +7,7 @@ export default function Home(){
     let [docName, setDocName] = useState("");
     const nav = useNavigate();
     function loadList(){
-        fetch(`http://209.151.148.64:3001/collection/list`, {
+        fetch(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/collection/list`, {
             method: 'GET',
             credentials: 'include'
         })
@@ -20,7 +20,7 @@ export default function Home(){
         loadList();
     }
     function handleLogout(){
-        fetch(`http://209.151.148.64:3001/collection/list`, {
+        fetch(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/collection/list`, {
             method: 'POST',
             credentials: 'include'
         })
@@ -28,7 +28,7 @@ export default function Home(){
         nav('/');
     }
     function createDocument(event){
-        fetch(`http://209.151.148.64:3001/collection/create`, {
+        fetch(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/collection/create`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -44,7 +44,7 @@ export default function Home(){
         });
     }
     function handleRemove(event){
-        fetch("http://209.151.148.64:3001/collection/delete", {
+        fetch("http://plzwork.cse356.compas.cs.stonybrook.edu:3001/collection/delete", {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -58,6 +58,7 @@ export default function Home(){
     }
     let documents="";
     if(list){
+        console.log(list);
         documents = list.map((pair, index) => {
             return <DocumentCards
                 key={pair.id}

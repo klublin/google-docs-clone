@@ -29,7 +29,7 @@ export default function LoginScreen(){
                 nav("/home");
             }
             else{
-                setName("");
+                setEmail("");
                 setPassword("");
             }
         })

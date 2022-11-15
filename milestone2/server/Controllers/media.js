@@ -16,8 +16,6 @@ const upload = multer({
 
 
 uploadImage = (req,res) => {
-    console.log("hey");
-    console.log(req.file);
     upload(req, res, (err) => {
         if(err){
             console.log(err);
@@ -40,9 +38,7 @@ access = (req,res) => {
     var options = {
         root: path.join(__dirname,'../uploads')
     }
-    console.log("path is ? ");
-    console.log(path.join(__dirname, '../uploads'));
-    res.sendFile('${mediaid}', options);
+    res.sendFile(`${id}`, options);
     
 }
 

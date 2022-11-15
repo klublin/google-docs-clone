@@ -12,12 +12,10 @@ let transporter = mail.createTransport({
 
 signup = async (req,res) => {
     const emailCheck = await User.findOne({email: req.body.email});
-    console.log(emailCheck);
     if(emailCheck!==null){
         res.status(200).json({error: true, message: 'Duplicate email'});
         return;
     }
-    console.log(req.body);
     let verify = uuid.v4();
     const newUser = await User.create({
         name: req.body.name,
@@ -39,17 +37,16 @@ signup = async (req,res) => {
 }
 
 login = async (req, res) => {
-    console.log(req.body);
     let verify = await User.findOne({email: req.body.email});
-    console.log(verify);
     if(!verify || verify.password!= req.body.password || !verify.verified){
         res.status(200).json({error: true, message: "incorrect credentials"});
         return;
     }
-    console.log("HII???");
+    console.log("SETTING STUFF FOR EXPRESS SESSIONS");
+    console.log(req.body);
     let session = req.session;
     session.key = req.body.email;
-    console.log("i did get here though");
+    session.name = verify.name;
     res.status(200).json({name: verify.name});
 }
 
@@ -60,7 +57,6 @@ logout = (req, res) => {
 }
 
 verify = async (req, res) => {
-    console.log(typeof req.query.key);
     let checkDB = await User.findOne({key: req.query.key});
     if(!checkDB){
       res.status.json({error: true, message: "cannot find the user"});

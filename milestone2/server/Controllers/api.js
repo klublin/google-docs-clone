@@ -1,15 +1,18 @@
 const Y = require('yjs')
 const docMap = require('../db/docMap');
 const list = require('../db/top10List');
-
+const Delta = require('quill-delta');
 const map = {};
 
 connect = (req,res) => {
+    console.log("hi bros I am tryna connect");
     const headers = {
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache'
-      };
+    };
+    //let thing = new Delta().insert("hi bros").insert({image: "http://plzwork.cse356.compas.cs.stonybrook.edu/media/access/001.png"});
+    
     res.writeHead(200, headers);
     if(map[req.params.id] !== undefined){
         map[req.params.id].clients.push(res);
@@ -32,24 +35,21 @@ connect = (req,res) => {
     res.write('event: sync\ndata: ' + `${string}\n\n`);
 }
 
-op = (req,res) => { 
+op = (req,res) => {
     let arr = map[req.params.id].clients;
     Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
     let string = JSON.stringify(req.body);
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
-    console.log(req.params.id);
-    editedDoc(req.params.id);
     res.status(200).send("update posted");
 }
 
 presence = (req,res) => {
-    console.log(req.body);
-    let arr = map[req.params.id].clients;
+    let arr = map[req.params.id].clients; 
     let string = {
-        id: req.sessionID,
-        name: docMap.getName(req.params.id),
+        session_id: req.sessionID,
+        name: req.session.name,
         cursor:{
             index : req.body.index,
             length : req.body.length

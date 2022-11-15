@@ -7,12 +7,10 @@ listAdd = (id, name) => {
 }
 
 listDelete = (id) => {
-    console.log("hi i'm trying to delete a list");
     list = list.filter(element => element.id!= id);
 }
 
 toJson = () => {
-    console.log(list);
     if(list.length > 10){
         return list.slice(0, 10);
     }
@@ -21,15 +19,8 @@ toJson = () => {
     }
 }
 
-moveDoc = (docID, name) => {
-    let search = {id: docID, name: name}
-    let index = list.filter(element => element.name != name);
-    list.splice(0, 0, search);
-}
-
 module.exports = {
     listAdd,
     listDelete,
-    toJson,
-    moveDoc
+    toJson
 }

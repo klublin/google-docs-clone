@@ -31,14 +31,10 @@ getDoc = (docID) => {
     return docMap.get(Number(docID)).doc;
 }
 
-editedDoc = (docId) => {
-    top10.moveDoc(docId, docMap.get(Number(docId)).name);
-}
 
 module.exports = {
     docAdd,
     docDelete,
     getName,
-    getDoc,
-    editedDoc
+    getDoc
 }
