@@ -6,6 +6,7 @@ const redisStore = require('connect-redis')(session);
 const client  = redis.createClient({
     legacyMode: true
 });
+const path = require('path');
 
 client.connect().then(()=>{
     console.log("connected to Redis!");
@@ -14,7 +15,7 @@ client.connect().then(()=>{
 // CREATE OUR SERVER
 const app = express()
 app.use(express.static('public'));
-app.use(cors({credentials: true, origin: 'http://kevwei.cse356.compas.cs.stonybrook.edu:3000'}))
+app.use(cors({credentials: true, origin: 'http://plzwork.cse356.compas.cs.stonybrook.edu'}))
 app.use(express.json())
 const db = require('./db'); 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -29,31 +30,38 @@ app.use(session({
     cookie: {sameSite: true }
 }));
 
+function isAuthenticated (req, res, next) {
+    if (req.session.key) next()
+    else res.status(200).json({error: true, message: ""});
+  }
 
 const apiRouter = require('./routes/apiRoutes.js');
-app.use('/api', apiRouter)
+app.use('/api', isAuthenticated, apiRouter)
 const userRouter = require('./routes/userRoutes.js');
 app.use('/users', userRouter);
 
 const collectionRouter = require('./routes/collectionRoutes.js');
-app.use('/collection', collectionRouter);
+app.use('/collection', isAuthenticated, collectionRouter);
 
 const mediaRouter = require('./routes/mediaRoutes');
-app.use('/media', mediaRouter);
+app.use('/media', isAuthenticated, mediaRouter);
 
+app.use(express.static("public"));
 
 app.get('/', (req,res) => {
-    
+    res.sendFile(path.join(__dirname,'public/index.html'));
 })
 
 app.get('/home', (req,res) => {
-    res.redirect('/');
+    if(req.cookie){
+        res.redirect('/');
+    }
+    res.status(200).json({error: true, message: "cookies not set"});
+    
 })
 
-app.get('/imageupload', (req,res) => {
-    console.log("HELLO????");
-    res.sendFile(__dirname + '/public/form.html')
-})
+app.use('/library', express.static('dist'))
+
 //BTW THE /HOME ROUTE WILL ONLY REALLY BE USED FOR THE FRONTEND, WE DON'T HAVE TO SERVE IT OUT OF THE BACKEND
 //get library route defined here
 

@@ -3,17 +3,17 @@ import {useNavigate} from 'react-router-dom';
 
 
 export default function LoginScreen(){
-    const [user, setUser] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const nav = useNavigate();
 
     function handleSubmit(){
         console.log("i'm still firing");
         let data ={
-            user: user,
+            email: email,
             password: password
         };
-        fetch("http://kevwei.cse356.compas.cs.stonybrook.edu:3001/users/login", {
+        fetch("http://plzwork.cse356.compas.cs.stonybrook.edu:3001/users/login", {
             method: "POST",
             credentials: 'include',
             headers: {
@@ -29,7 +29,7 @@ export default function LoginScreen(){
                 nav("/home");
             }
             else{
-                setUser("");
+                setName("");
                 setPassword("");
             }
         })
@@ -43,8 +43,8 @@ export default function LoginScreen(){
             Email:
                 <input 
                     type="text" 
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
             </label>
             <label>

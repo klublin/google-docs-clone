@@ -30,7 +30,7 @@ export default function TextEditor() {
 
         new QuillBinding(ytext, d);
         ydoc.on('update', update => {
-            fetch(`http://kevwei.cse356.compas.cs.stonybrook.edu:3001/api/op/${id}`, {
+            fetch(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/api/op/${id}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -45,7 +45,7 @@ export default function TextEditor() {
         setCursor(c);
         d.on('selection-change', function(range, oldRange, source) {
             if(range!=oldRange){
-                fetch(`http://kevwei.cse356.compas.cs.stonybrook.edu:3001/api/presence/${id}`, {
+                fetch(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/api/presence/${id}`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -61,7 +61,7 @@ export default function TextEditor() {
         if(doc === undefined ){
             return;
         }
-        const events = new EventSource(`http://kevwei.cse356.compas.cs.stonybrook.edu:3001/api/connect/${id}`)
+        const events = new EventSource(`http://plzwork.cse356.compas.cs.stonybrook.edu:3001/api/connect/${id}`)
         events.addEventListener('sync', (event) =>{
             let obj = JSON.parse(event.data);
             obj = Uint8Array.from(obj);

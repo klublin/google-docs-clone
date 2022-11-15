@@ -39,6 +39,8 @@ op = (req,res) => {
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
+    console.log(req.params.id);
+    editedDoc(req.params.id);
     res.status(200).send("update posted");
 }
 

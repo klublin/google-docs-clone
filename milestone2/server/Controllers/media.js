@@ -12,11 +12,12 @@ const imageStorage = multer.diskStorage({
 });
 const upload = multer({
     storage: imageStorage
-}).single("images");
+}).single("file");
 
 
 uploadImage = (req,res) => {
     console.log("hey");
+    console.log(req.file);
     upload(req, res, (err) => {
         if(err){
             console.log(err);
@@ -24,7 +25,7 @@ uploadImage = (req,res) => {
         }
         else{
             let ext = path.extname(req.file.filename);
-            if(ext!='.png' && ext!='.jpeg'){
+            if(ext!='.png' && ext!='.jpeg' && ext!='.jpg'){
                 res.status(200).json({error: true, message: "wrong file type"});
             }
             else
@@ -36,10 +37,12 @@ uploadImage = (req,res) => {
 
 access = (req,res) => {
     let id = req.params.mediaid;
-    var path = {
+    var options = {
         root: path.join(__dirname,'../uploads')
     }
-    res.sendFile('${mediaid}', path);
+    console.log("path is ? ");
+    console.log(path.join(__dirname, '../uploads'));
+    res.sendFile('${mediaid}', options);
     
 }
 

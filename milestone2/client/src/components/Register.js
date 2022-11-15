@@ -5,23 +5,23 @@ import {useNavigate} from 'react-router-dom';
 
 export default function RegisterScreen(){
 
-    const [user, setUser] = useState("");
+    const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const nav = useNavigate();
 
     function handleSubmit (){
         let data = {
-            user: user,
+            name: name,
             password: password,
             email: email
         }
-        fetch("http://kevwei.cse356.compas.cs.stonybrook.edu:3001/users/signup", {
+        console.log("i did in fact try to post some stuff");
+        fetch("http://plzwork.cse356.compas.cs.stonybrook.edu:3001/users/signup", {
             method: "POST",
-            credentials: 'include',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: JSON.stringify(data)
         })
@@ -31,7 +31,7 @@ export default function RegisterScreen(){
                 nav("/");
             }
             else{
-                setUser("");
+                setName("");
                 setEmail("");
                 setPassword("");
             }
@@ -39,15 +39,13 @@ export default function RegisterScreen(){
     }
     return (
         <div id="register-form">
-            <form 
-                onSubmit={handleSubmit}
-            >
+            <div>
             <label>
-            Username:
+            name:
                 <input 
                     type="text" 
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                 />
             </label>
             <label>
@@ -55,18 +53,19 @@ export default function RegisterScreen(){
                 <input 
                     type="text" 
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}/>
-                </label>
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+            </label>
             <label>
             Email:
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
             </label>
-            <input type="submit" value = "submit"/>
-            </form> 
+            <input type="button" value = "submit" onClick={handleSubmit}/>
+            </div>
         </div>
     )
 }

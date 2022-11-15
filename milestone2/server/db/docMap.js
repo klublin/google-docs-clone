@@ -1,7 +1,7 @@
 const Y = require('yjs');
 const docMap = new Map();
 const top10 = require('./top10List');
-let id = 0;
+let id = 1;
 
 docAdd = (name) => {
     let obj = {
@@ -31,9 +31,14 @@ getDoc = (docID) => {
     return docMap.get(Number(docID)).doc;
 }
 
+editedDoc = (docId) => {
+    top10.moveDoc(docId, docMap.get(Number(docId)).name);
+}
+
 module.exports = {
     docAdd,
     docDelete,
     getName,
-    getDoc
+    getDoc,
+    editedDoc
 }

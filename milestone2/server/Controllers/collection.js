@@ -8,7 +8,7 @@ createDoc = (req,res) => {
     let {name} = req.body;
     
     let id = docMap.docAdd(name);
-    res.status(200).json({id});
+    res.status(200).json({id: String(id)});
 }
 
 deleteDoc = (req,res) => {
@@ -23,7 +23,7 @@ deleteDoc = (req,res) => {
 
 listDocuments = (req,res) => {
     let arr = list.toJson();
-    
+    console.log(arr);
     res.status(200).json(arr);
 }
 
