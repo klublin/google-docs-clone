@@ -15,24 +15,20 @@ exports.CRDT = class {
     this.cb = cb;
     this.y = new Y.Doc();
     this.text = this.y.getText('quill');
-    this.local = true;
-    this.y.on('update', (update: any) => {
-      this.cb(JSON.stringify(Array.from(update)), this.local);
+    this.y.on('update', (update: any, origin: any) => {
+      this.cb(JSON.stringify(Array.from(update)), origin.local? true : false);
     });
     ['update', 'insert', 'delete', 'insertImage', 'toHTML'].forEach(f => (this as any)[f] = (this as any)[f].bind(this));
   }
   update(update: string) {
     let obj = JSON.parse(update);
     obj = Uint8Array.from(obj);
-    this.local = false;
     Y.applyUpdate(this.y, obj);
   }
   insert(index: number, content: string, format: CRDTFormat) {
-    this.local = true;
     this.text.insert(index, content, format);
   }
   delete(index: number, length: number) {
-    this.local = true;
     this.text.delete(index, length);
   }
   insertImage(index: number, url: string){
