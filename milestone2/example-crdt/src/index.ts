@@ -15,15 +15,15 @@ exports.CRDT = class {
     this.cb = cb;
     this.y = new Y.Doc();
     this.text = this.y.getText('quill');
-    this.y.on('update', (update: any, origin: Boolean) => {
-      this.cb(JSON.stringify(Array.from(update)), origin === false? false : true);
+    this.y.on('update', (update: any, origin: string) => {
+      this.cb(JSON.stringify(Array.from(update)), origin!== "remote");
     });
     ['update', 'insert', 'delete', 'insertImage', 'toHTML'].forEach(f => (this as any)[f] = (this as any)[f].bind(this));
   }
   update(update: string) {
     let obj = JSON.parse(update);
     obj = Uint8Array.from(obj);
-    Y.applyUpdate(this.y, obj, false);
+    Y.applyUpdate(this.y, obj, "remote");
   }
   insert(index: number, content: string, format: CRDTFormat) {
     this.text.insert(index, content, format);
