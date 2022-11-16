@@ -16,7 +16,7 @@ exports.CRDT = class {
     this.y = new Y.Doc();
     this.text = this.y.getText('quill');
     this.y.on('update', (update: any, origin: Boolean) => {
-      this.cb(JSON.stringify(Array.from(update)), origin == false? false : true);
+      this.cb(JSON.stringify(Array.from(update)), origin === false? false : true);
     });
     ['update', 'insert', 'delete', 'insertImage', 'toHTML'].forEach(f => (this as any)[f] = (this as any)[f].bind(this));
   }
