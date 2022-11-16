@@ -9,8 +9,7 @@ class CRDTFormat {
 exports.CRDT = class {
   y: any;
   text: any;
-  cb: any;
-  local: boolean 
+  cb: any; 
   constructor(cb: (update: string, isLocal: Boolean) => void) {
     this.cb = cb;
     this.y = new Y.Doc();
