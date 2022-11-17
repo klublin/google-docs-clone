@@ -40,7 +40,8 @@ app.post('/api/op/:id', (req,res) =>{
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
-    res.status(200).send("update posted");
+    res.status(200).json({});
+    console.log("lol");
 })
 app.listen(port, () => {
     console.log(`App listening on ${port}`)

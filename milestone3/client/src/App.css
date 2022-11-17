@@ -1,0 +1,16 @@
+
+
+.document-card{
+    background-color: rgb(0, 255, 102);
+    font-size: 32pt;
+    margin: 4px;
+    border-radius: 5px;
+}
+.document-card:hover{
+    background-color: black;
+    color: white;
+}
+.remove-document-button{
+    float: right;
+    font-size: 20pt;
+}
