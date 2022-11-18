@@ -15,7 +15,7 @@ client.connect().then(()=>{
 // CREATE OUR SERVER
 const app = express()
 app.use(express.static('public'));
-app.use(cors({credentials: true, origin: 'http://plzwork.cse356.compas.cs.stonybrook.edu'}))
+app.use(cors({credentials: true, origin: 'http://giveten.cse356.compas.cs.stonybrook.edu'}))
 app.use(express.json())
 const db = require('./db'); 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -23,7 +23,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.set('trust proxy', true);
 app.use(session({
     secret: 'IHATETHISCLASS1023847&',
-    // create new redis store.
     store: new redisStore({ host: 'localhost', port: 6379, client: client}),
     saveUninitialized: true,
     resave: false,
@@ -37,10 +36,9 @@ function isAuthenticated (req, res, next) {
     else res.status(200).json({error: true, message: ""});
 }
 
-
-
 const apiRouter = require('./routes/apiRoutes.js');
 app.use('/api', isAuthenticated, apiRouter)
+
 const userRouter = require('./routes/userRoutes.js');
 app.use('/users', userRouter);
 
@@ -50,22 +48,25 @@ app.use('/collection', isAuthenticated, collectionRouter);
 const mediaRouter = require('./routes/mediaRoutes');
 app.use('/media', isAuthenticated, mediaRouter);
 
+const indexRouter = require('./routes/indexRoutes');
+app.use('/index', isAuthenticated, indexRouter);
+
 app.use(express.static("public"));
 
 app.get('/', (req,res) => {
     res.sendFile(path.join(__dirname,'public/index.html'));
 })
+
 app.get('/edit/:id', (req,res) =>{
     console.log(req.session);
     if(req.session.cookie && req.session.key){
-        console.log("YAY!");
         res.sendFile(path.join(__dirname,'public/index.html'));
     }
     else{
-        console.log("pain pkeo??");
         res.json({error: true, message: "cookies not set"})
     }
 })
+
 app.get('/home', (req,res) => {
     if(req.session.cookie){
         res.sendFile(path.join(__dirname, 'public/index.html'));
@@ -76,10 +77,6 @@ app.get('/home', (req,res) => {
 })
 
 app.use('/library', express.static('dist'))
-
-//BTW THE /HOME ROUTE WILL ONLY REALLY BE USED FOR THE FRONTEND, WE DON'T HAVE TO SERVE IT OUT OF THE BACKEND
-//get library route defined here
-
 
 const port = 3001;
 app.listen(port, () => {
