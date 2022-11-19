@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const index = require('../Controllers/index')
+const index = require('../Controllers/elastic')
 
 
 router.get('/search', index.search);

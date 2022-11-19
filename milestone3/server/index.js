@@ -54,6 +54,7 @@ app.use('/index', isAuthenticated, indexRouter);
 app.use(express.static("public"));
 
 app.get('/', (req,res) => {
+    console.log("hmmm");
     res.sendFile(path.join(__dirname,'public/index.html'));
 })
 

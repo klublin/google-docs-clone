@@ -8,7 +8,6 @@ export default function LoginScreen(){
     const nav = useNavigate();
 
     function handleSubmit(){
-        console.log("i'm still firing");
         let data ={
             email: email,
             password: password
@@ -24,7 +23,6 @@ export default function LoginScreen(){
         })
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
             if(!data.error){
                 nav("/home");
             }

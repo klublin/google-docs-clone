@@ -4,9 +4,12 @@ const top10 = require('./top10List');
 let id = 1;
 
 docAdd = (name) => {
+    let newDoc = new Y.Doc();
+    let newText = newDoc.getText('quill');
     let obj = {
         name: name,
-        doc: new Y.Doc()
+        doc: newDoc,
+        text: newText
     };
     docMap.set(id, obj);
     
@@ -31,10 +34,15 @@ getDoc = (docID) => {
     return docMap.get(Number(docID)).doc;
 }
 
+getText = (docID) =>{
+    return docMap.get(Number(docID)).text.toString;
+}
+
 
 module.exports = {
     docAdd,
     docDelete,
     getName,
-    getDoc
+    getDoc,
+    getText
 }

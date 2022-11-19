@@ -52,13 +52,11 @@ export default function Home(){
             },
             body: JSON.stringify({id: event.target.id})
         }).then(()=>{
-            console.log("i'm in here?");
             loadList();
         })
     }
     let documents="";
     if(list){
-        console.log(list);
         documents = list.map((pair, index) => {
             return <DocumentCards
                 key={pair.id}

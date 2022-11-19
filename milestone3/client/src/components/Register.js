@@ -16,7 +16,6 @@ export default function RegisterScreen(){
             password: password,
             email: email
         }
-        console.log("i did in fact try to post some stuff");
         fetch("http://plzwork.cse356.compas.cs.stonybrook.edu:3001/users/signup", {
             method: "POST",
             headers: {
