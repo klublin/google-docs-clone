@@ -64,7 +64,7 @@ const search = async (req,res) => {
         else{
             temp = arr[i].highlight.text[0];
         }
-        found.push({docid: arr[i]._source.id, name: arr[i]._source.name, snippet: temp});
+        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
         i++;
     }
     res.json(found);

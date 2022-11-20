@@ -40,7 +40,6 @@ getDoc = (docID) => {
 }
 
 getText = (docID) =>{
-    console.log(docID);
     return docMap.get(docID).text.toString();
 }
 

@@ -4,8 +4,6 @@ let list = [];
 let queue = [];
 
 listAdd = (id, name) => {
-    console.log("queue is ");
-    console.log(queue);
     list.splice(0, 0,{id: id, name: name});
 }
 
@@ -14,7 +12,6 @@ listDelete = (id) => {
 }
 
 toJson = () => {
-    console.log(list);
     if(list.length > 10){
         return list.slice(0, 10);
     }

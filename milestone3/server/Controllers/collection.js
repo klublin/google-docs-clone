@@ -12,7 +12,6 @@ createDoc = async (req,res) => {
 
 deleteDoc = (req,res) => {
     let {id} = req.body
-    console.log("id = " + id);
     let check = docMap.docDelete(id);
     if(!check){
         res.status(200).json({error: true, message: "doc does not exist"});

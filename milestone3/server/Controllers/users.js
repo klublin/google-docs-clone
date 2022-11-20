@@ -41,8 +41,6 @@ login = async (req, res) => {
         res.status(200).json({error: true, message: "incorrect credentials"});
         return;
     }
-    console.log("SETTING STUFF FOR EXPRESS SESSIONS");
-    console.log(req.body);
     let session = req.session;
     session.key = req.body.email;
     session.name = verify.name;
