@@ -24,8 +24,6 @@ signup = async (req,res) => {
         key: verify,
         verified: false
     })
-    console.log("???");
-    console.log(req.body);
     let link = "http://giveten.cse356.compas.cs.stonybrook.edu/users/verify?email="+encodeURIComponent(req.body.email) + '&key=' + encodeURIComponent(verify);
     transporter.sendMail({
         to: req.body.email,
@@ -38,10 +36,8 @@ signup = async (req,res) => {
 }
 
 login = async (req, res) => {
-    console.log(await User.find());
     let verify = await User.findOne({email: req.body.email});
-    console.log(verify);
-    if(!verify || verify.password!= req.body.password){// || !verify.verified){
+    if(!verify || verify.password!= req.body.password|| !verify.verified){
         res.status(200).json({error: true, message: "incorrect credentials"});
         return;
     }

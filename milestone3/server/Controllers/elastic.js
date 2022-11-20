@@ -4,45 +4,18 @@ const client = require('../db/elasticSearch')
 
 
 updateIndex = async () => {
-    let arr = list.toJson(); 
-    
-    if(await client.indices.exists({index: "milestone3"})){
-        await client.indices.delete({index: "milestone3"});
-    }
-    await client.indices.create({
-        index: "milestone3",
-        "settings": {
-            "analysis": {
-              "analyzer": {
-                "my_analyzer": {
-                  "tokenizer": "whitespace",
-                  "filter": [ "stop", "kstem" ]
-                }
-              }
-            }
-        },
-        mappings: {
-            properties: {
-                name: {
-                    type: "text",
-                    analyzer: "my_analyzer"
-                },
-                text: {
-                    type: "text",
-                    analyzer: "my_analyzer"
-                }
-            }
-        }
-    });
-    for(const element of arr){ 
+    let q = list.toQueue(); 
+    for(const element of q){ 
         await client.index({
-            index: "milestone3", 
+            index: "milestone3",
+            id: element.id, 
             body: {
                 name: element.name,
                 text: docMap.getText(element.id)
             }
         })
     }
+    emptyQueue();
     await client.indices.refresh({index: 'milestone3'})
 }
 
@@ -80,8 +53,21 @@ const search = async (req,res) => {
             }
         }
     })
-
-    res.json({result: result.hits.hits});
+    let arr = result.hits.hits;
+    let found = [];
+    let i = 0;
+    while(found.length < 10 && i<arr.length){
+        let temp = arr[i].highlight.text;
+        if(!arr[i].highlight.text){
+            arr[i].highlight.name[0];
+        }
+        else{
+            temp = arr[i].highlight.text[0];
+        }
+        found.push({docid: arr[i]._source.id, name: arr[i]._source.name, snippet: temp});
+        i++;
+    }
+    res.json(found);
 }
 
 const suggest = (req,res) => {

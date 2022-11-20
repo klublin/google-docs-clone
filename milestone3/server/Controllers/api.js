@@ -5,7 +5,6 @@ const Delta = require('quill-delta');
 const map = {};
 
 connect = (req,res) => {
-    console.log("hi bros I am tryna connect");
     const headers = {
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
@@ -43,6 +42,7 @@ op = (req,res) => {
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
     res.status(200).send("update posted");
+    recentlyEdited(req.params.id,docMap.getName(req.params.id));
 }
 
 presence = (req,res) => {
