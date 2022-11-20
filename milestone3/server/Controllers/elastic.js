@@ -4,9 +4,37 @@ const client = require('../db/elasticSearch')
 
 
 updateIndex = async () => {
-    let arr = list.toJson();
-    console.log(arr);
-    for(const element of arr){
+    let arr = list.toJson(); 
+    
+    if(await client.indices.exists({index: "milestone3"})){
+        await client.indices.delete({index: "milestone3"});
+    }
+    await client.indices.create({
+        index: "milestone3",
+        "settings": {
+            "analysis": {
+              "analyzer": {
+                "my_analyzer": {
+                  "tokenizer": "whitespace",
+                  "filter": [ "stop", "kstem" ]
+                }
+              }
+            }
+        },
+        mappings: {
+            properties: {
+                name: {
+                    type: "text",
+                    analyzer: "my_analyzer"
+                },
+                text: {
+                    type: "text",
+                    analyzer: "my_analyzer"
+                }
+            }
+        }
+    });
+    for(const element of arr){ 
         await client.index({
             index: "milestone3", 
             body: {
@@ -14,42 +42,46 @@ updateIndex = async () => {
                 text: docMap.getText(element.id)
             }
         })
-        console.log(docMap.getText(element.id));
     }
+    await client.indices.refresh({index: 'milestone3'})
 }
 
 
 const search = async (req,res) => {
-    console.log("please man");
     updateIndex();
     const {q} = req.query;
     const result = await client.search({
         body: {
             query: {
-                "bool": {
-                    "should": [
-                    {
-                        "match": {
-                            "name": q 
+                bool : {
+                    should: [
+                        {
+                            match: {
+                                text : {
+                                    query: q
+                                }
+                            }
+                        },
+                        {
+                            match: {
+                                name : {
+                                    query: q
+                                }
+                            }
                         }
-                    },
-                    {
-                        "match": {
-                            "text": q
-                        }
-                    }]
-                }
+                    ]
+                }  
             },
-            "highlight" :{
-                "fields" : {
-                    "name" : {},
-                    "text" : {}
+            highlight: {
+                fields: {
+                    text: {},
+                    name: {}
                 }
             }
         }
     })
 
-    res.json({result: result});
+    res.json({result: result.hits.hits});
 }
 
 const suggest = (req,res) => {

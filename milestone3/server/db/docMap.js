@@ -35,7 +35,7 @@ getDoc = (docID) => {
 }
 
 getText = (docID) =>{
-    return docMap.get(Number(docID)).text.toString;
+    return docMap.get(Number(docID)).text.toString();
 }
 
 

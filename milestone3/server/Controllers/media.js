@@ -23,7 +23,7 @@ uploadImage = (req,res) => {
         }
         else{
             let ext = path.extname(req.file.filename);
-            if(ext!='.png' && ext!='.jpeg' && ext!='.jpg'){
+            if(ext!='.png' && ext!='.jpeg' && ext!='.jpg' && ext!='.gif'){
                 res.status(200).json({error: true, message: "wrong file type"});
             }
             else
