@@ -15,8 +15,10 @@ updateIndex = async () => {
             }
         })
     }
-    emptyQueue();
-    await client.indices.refresh({index: 'milestone3'})
+    if(q.length!=0){
+        emptyQueue();
+        await client.indices.refresh({index: 'milestone3'})
+    }
 }
 
 
@@ -70,8 +72,27 @@ const search = async (req,res) => {
     res.json(found);
 }
 
-const suggest = (req,res) => {
+const suggest = async (req,res) => {
     updateIndex();
+    const {q} = req.query;
+    const size = q.length+1;
+    const result = await client.search({
+        index: "milestone3",
+        body: {
+            suggest: {
+                "my-suggest" : {
+                    text: q,
+                    "term": {
+                        "field": "text",
+                        "suggest_mode": "missing",
+                        "min_word_length": size
+                    }
+                }
+            }
+        }
+    })
+    console.log(result);
+    res.json({result: result});
 }
 
 module.exports = {
