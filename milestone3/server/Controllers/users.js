@@ -37,7 +37,7 @@ signup = async (req,res) => {
 
 login = async (req, res) => {
     let verify = await User.findOne({email: req.body.email});
-    if(!verify || verify.password!= req.body.password|| !verify.verified){
+    if(!verify || verify.password!= req.body.password){
         res.status(200).json({error: true, message: "incorrect credentials"});
         return;
     }

@@ -41,8 +41,10 @@ op = (req,res) => {
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
-    recentlyEdited(req.params.id,docMap.getName(req.params.id));
-    res.status(200).send("update posted");
+    setTimeout(( )=>{
+        recentlyEdited(req.params.id, docMap.getName(req.params.id));
+        res.status(200).send("update posted");
+    },400);
 }
 
 presence = (req,res) => {

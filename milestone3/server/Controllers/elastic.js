@@ -4,25 +4,33 @@ const client = require('../db/elasticSearch')
 
 
 updateIndex = async () => {
-    let q = list.toQueue(); 
+    let q = list.toQueue();
+    if(q.length == 0){
+        return;
+    }
+    let arr = [];
     for(const element of q){ 
-        await client.index({
-            index: "milestone3",
-            id: element.id, 
-            body: {
-                name: element.name,
-                text: docMap.getText(element.id)
-            }
-        })
+        let str = docMap.getText(element.id);
+        let head = {
+            index: {_index: "milestone3", _id: element.id}
+        }
+        let body = {
+            name: element.name,
+            text: str,
+            suggest: str.split(/[\n ]+/)
+        };
+        arr.push(head);
+        arr.push(body);  
     }
-    if(q.length!=0){
-        emptyQueue();
-        await client.indices.refresh({index: 'milestone3'})
-    }
+    await client.bulk({
+        refresh: "wait_for",
+        body: arr
+    })
 }
 
 
 const search = async (req,res) => {
+    console.log("SEARCH ME");
     updateIndex();
     const {q} = req.query;
     const result = await client.search({
@@ -61,7 +69,7 @@ const search = async (req,res) => {
     while(found.length < 10 && i<arr.length){
         let temp = arr[i].highlight.text;
         if(!arr[i].highlight.text){
-            arr[i].highlight.name[0];
+            temp = arr[i].highlight.name[0];
         }
         else{
             temp = arr[i].highlight.text[0];
@@ -73,29 +81,70 @@ const search = async (req,res) => {
 }
 
 const suggest = async (req,res) => {
+    console.log('SUGGEST ME');
     updateIndex();
     const {q} = req.query;
-    const size = q.length+1;
     const result = await client.search({
         index: "milestone3",
         body: {
             suggest: {
-                "my-suggest" : {
-                    text: q,
-                    "term": {
-                        "field": "text",
-                        "suggest_mode": "missing",
-                        "min_word_length": size
+                "mySuggestion": {
+                    prefix: q,
+                    completion: {
+                        field: "suggest",
+                        size: 5
                     }
                 }
             }
         }
     })
-    console.log(result);
-    res.json({result: result});
+    let arr = result.suggest.mySuggestion[0].options;
+    let done = [];
+
+    arr.forEach(element => {
+        done.push(element.text);
+    })
+    res.json({"result": done});   
+}
+
+
+secret = async (req,res) => {
+    if(await client.indices.exists({index: "milestone3"})){
+        await client.indices.delete({index: "milestone3"});
+    }
+    await client.indices.create({
+        index: "milestone3",
+        "settings": {
+            "analysis": {
+              "analyzer": {
+                "my_analyzer": {
+                  "tokenizer": "whitespace",
+                  "filter": [ "stop", "kstem" ]
+                }
+              }
+            }
+        },
+        mappings: {
+            properties: {
+                text: {
+                    type: "text",
+                    analyzer: "my_analyzer",
+                },
+                name: {
+                    type: "text",
+                    analyzer: "my_analyzer"
+                },
+                suggest: {
+                    type: "completion"
+                }
+            }
+        }
+    });
+    res.json("success!");
 }
 
 module.exports = {
     search,
-    suggest
+    suggest,
+    secret
 }
