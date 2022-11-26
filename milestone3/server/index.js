@@ -69,6 +69,7 @@ app.get('/edit/:id', (req,res) =>{
 })
 
 app.get('/home', (req,res) => {
+    console.log("????");
     if(req.session.cookie){
         res.sendFile(path.join(__dirname, 'public/index.html'));
     }

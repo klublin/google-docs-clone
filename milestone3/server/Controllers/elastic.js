@@ -1,9 +1,10 @@
 const docMap = require('../db/docMap'); 
 const list = require('../db/top10List'); 
 const client = require('../db/elasticSearch')
-
+const cache = new Map();
 
 updateIndex = async () => {
+    cache.clear();
     let q = list.toQueue();
     if(q.length == 0){
         return;
@@ -23,41 +24,33 @@ updateIndex = async () => {
         arr.push(body);  
     }
     await client.bulk({
-        refresh: "wait_for",
         body: arr
     })
+    await client.indices.refresh({index: "milestone3"});
 }
-
 
 const search = async (req,res) => {
     console.log("SEARCH ME");
     updateIndex();
     const {q} = req.query;
+    if(cache.has(q)){
+        res.json(cache.get(q));
+        return;
+    }
     const result = await client.search({
         body: {
             query: {
-                bool : {
-                    should: [
-                        {
-                            match: {
-                                text : {
-                                    query: q
-                                }
-                            }
-                        },
-                        {
-                            match: {
-                                name : {
-                                    query: q
-                                }
-                            }
-                        }
-                    ]
-                }  
+                "multi_match": {
+                    query: q,
+                    fields: ["text", "name"]
+                }
             },
             highlight: {
                 fields: {
-                    text: {},
+                    text: {
+                        "boundary_scanner": "sentence",
+                        "fragment_size": 0
+                    },
                     name: {}
                 }
             }
@@ -77,6 +70,9 @@ const search = async (req,res) => {
         found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
         i++;
     }
+    if(arr.length!=0){
+        cache.set(q, found);
+    }
     res.json(found);
 }
 
@@ -84,6 +80,10 @@ const suggest = async (req,res) => {
     console.log('SUGGEST ME');
     updateIndex();
     const {q} = req.query;
+    if(cache.has(q)){
+        res.json(cache.get(q));
+        return;
+    }
     const result = await client.search({
         index: "milestone3",
         body: {
@@ -99,12 +99,16 @@ const suggest = async (req,res) => {
         }
     })
     let arr = result.suggest.mySuggestion[0].options;
+
     let done = [];
 
     arr.forEach(element => {
         done.push(element.text);
     })
-    res.json({"result": done});   
+    if(arr.length!=0){
+        cache.set(q,done);
+    }
+    res.json(done);   
 }
 
 
@@ -119,7 +123,7 @@ secret = async (req,res) => {
               "analyzer": {
                 "my_analyzer": {
                   "tokenizer": "whitespace",
-                  "filter": [ "stop", "kstem" ]
+                  "filter": [ "stop", "kstem", "lowercase" ]
                 }
               }
             }
@@ -128,14 +132,15 @@ secret = async (req,res) => {
             properties: {
                 text: {
                     type: "text",
-                    analyzer: "my_analyzer",
+                    analyzer: "my_analyzer"
                 },
                 name: {
                     type: "text",
                     analyzer: "my_analyzer"
                 },
                 suggest: {
-                    type: "completion"
+                    type: "completion",
+                    analyzer: "my_analyzer"
                 }
             }
         }

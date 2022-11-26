@@ -3,6 +3,8 @@ const docMap = require('../db/docMap');
 const list = require('../db/top10List');
 const Delta = require('quill-delta');
 const map = {};
+const timeout = 50
+console.log(timeout);
 
 connect = (req,res) => {
     const headers = {
@@ -41,10 +43,8 @@ op = (req,res) => {
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
-    setTimeout(( )=>{
         recentlyEdited(req.params.id, docMap.getName(req.params.id));
         res.status(200).send("update posted");
-    },400);
 }
 
 presence = (req,res) => {
