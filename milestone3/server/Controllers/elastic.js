@@ -11,14 +11,12 @@ updateIndex = async () => {
     }
     let arr = [];
     for(const element of q){ 
-        let str = docMap.getText(element.id);
         let head = {
             index: {_index: "milestone3", _id: element.id}
         }
         let body = {
             name: element.name,
-            text: str,
-            suggest: str.split(/[\n ]+/)
+            text: docMap.getText(element.id)
         };
         arr.push(head);
         arr.push(body);  
@@ -60,12 +58,9 @@ const search = async (req,res) => {
     let found = [];
     let i = 0;
     while(found.length < 10 && i<arr.length){
-        let temp = arr[i].highlight.text;
+        let temp = arr[i].highlight.text[0];
         if(!arr[i].highlight.text){
             temp = arr[i].highlight.name[0];
-        }
-        else{
-            temp = arr[i].highlight.text[0];
         }
         found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
         i++;
@@ -87,13 +82,9 @@ const suggest = async (req,res) => {
     const result = await client.search({
         index: "milestone3",
         body: {
-            suggest: {
-                "mySuggestion": {
-                    prefix: q,
-                    completion: {
-                        field: "suggest",
-                        size: 5
-                    }
+            prefix: {
+                text: {
+                    value: q
                 }
             }
         }
@@ -136,10 +127,6 @@ secret = async (req,res) => {
                 },
                 name: {
                     type: "text",
-                    analyzer: "my_analyzer"
-                },
-                suggest: {
-                    type: "completion",
                     analyzer: "my_analyzer"
                 }
             }
