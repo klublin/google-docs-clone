@@ -49,7 +49,7 @@ const mediaRouter = require('./routes/mediaRoutes');
 app.use('/media', isAuthenticated, mediaRouter);
 
 const indexRouter = require('./routes/indexRoutes');
-app.use('/index', isAuthenticated, indexRouter);
+app.use('/index', isAuthenticated, indexRouter);        
 
 app.use(express.static("public"));
 
@@ -83,14 +83,4 @@ app.use('/library', express.static('dist'))
 const port = 3001;
 app.listen(port, () => {
     console.log(`App listening on ${port}`)
-})
-app.listen(3002, () => {
-    console.log(`App listening on 3002`)
-})
-app.listen(3003, () => {
-    console.log('App listening on 3003');
-})
-
-app.listen(3004, () => {
-    console.log('App listening on 3004');
 })

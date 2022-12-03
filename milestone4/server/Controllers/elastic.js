@@ -27,6 +27,21 @@ updateIndex = async () => {
     await client.indices.refresh({index: "milestone3"});
 }
 
+const parse = (arr) => {
+    let found = [];
+    let i = 0;
+    while(found.length < 10 && i<arr.length){
+        let temp = arr[i].highlight.text[0];
+        if(!arr[i].highlight.text){
+            temp = arr[i].highlight.name[0];
+        }
+        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
+        i++;
+    }
+
+    return found;
+}
+
 const search = async (req,res) => {
     console.log("SEARCH ME");
     updateIndex();
@@ -55,20 +70,11 @@ const search = async (req,res) => {
         }
     })
     let arr = result.hits.hits;
-    let found = [];
-    let i = 0;
-    while(found.length < 10 && i<arr.length){
-        let temp = arr[i].highlight.text[0];
-        if(!arr[i].highlight.text){
-            temp = arr[i].highlight.name[0];
-        }
-        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
-        i++;
-    }
+    let thing = parse(arr);
     if(arr.length!=0){
-        cache.set(q, found);
+        cache.set(q, thing);
     }
-    res.json(found);
+    res.json(thing);
 }
 
 const suggest = async (req,res) => {
@@ -82,24 +88,29 @@ const suggest = async (req,res) => {
     const result = await client.search({
         index: "milestone3",
         body: {
-            prefix: {
-                text: {
-                    value: q
+            query: {
+                prefix: {
+                    text: q
+                }
+            },
+            highlight: {
+                fields: {
+                    text: {
+                        "boundary_scanner": "word",
+                        "pre_tags": "",
+                        "post_tags": ""
+                    }
                 }
             }
+            
         }
     })
-    let arr = result.suggest.mySuggestion[0].options;
-
-    let done = [];
-
-    arr.forEach(element => {
-        done.push(element.text);
-    })
+    let arr = result.hits.hits;
+    let thing = parse(arr);
     if(arr.length!=0){
-        cache.set(q,done);
+        cache.set(q, thing);
     }
-    res.json(done);   
+    res.json(thing);
 }
 
 
@@ -125,7 +136,7 @@ secret = async (req,res) => {
                     type: "text",
                     analyzer: "my_analyzer",
                     "index_prefixes": {
-                        "min_chars": 4
+                        "min_chars": 3
                     }
                 },
                 name: {
