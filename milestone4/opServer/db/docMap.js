@@ -1,7 +1,7 @@
 const Y = require('yjs');
 const docMap = new Map();
-const client = require('../db/elasticSearch')
-const recent = [];
+const client = require('./elasticClient')
+let recent = [];
 
 setInterval(() => {
     let arr = [];
@@ -10,12 +10,12 @@ setInterval(() => {
             update: {_index: "milestone3", _id: recent[i].id}
         }
         let body = {
-            text: docMap.getText(element.id)
+            text: docMap.get(recent[i].id).getText('quill').toString()
         };
         arr.push(head);
         arr.push(body);  
     }
-    await client.bulk({
+    client.bulk({
         body: arr
     })
     recent = [];
@@ -40,5 +40,6 @@ const edited = (id) => {
 
 module.exports = {
     getDoc,
+    edited
 
 }

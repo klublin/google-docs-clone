@@ -1,6 +1,6 @@
 const Y = require('yjs')
 const Delta = require('quill-delta');
-const docMap = new Map();
+const docMap = require('./db/docMap');
 let clients = new Map();
 
 connect = (req,res) => {
@@ -38,6 +38,7 @@ op = (req,res) => {
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
+    docMap.edited(req.params.id);
     res.status(200).send("update posted");
 }
 
