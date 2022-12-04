@@ -29,6 +29,7 @@ connect = (req,res) => {
 }
 
 op = (req,res) => {
+    console.log("hello!");
     let arr = clients.get(req.params.id);
     Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
     let string = JSON.stringify(req.body);
