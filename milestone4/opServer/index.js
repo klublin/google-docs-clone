@@ -9,14 +9,11 @@ const client  = redis.createClient({
 });
 client.connect().then(()=>{
     console.log("connected to Redis!");
-}).catch("cannot");
+})
 
 const api = require('./api.js');
 const port = 3000;
-
-var router = express.Router();
-
-
+app.use(express.json())
 app.use(session({
     secret: 'IHATETHISCLASS1023847&',
     store: new redisStore({client: client}),
@@ -31,14 +28,13 @@ function isAuthenticated (req, res, next) {
     }
     else res.status(200).json({error: true, message: ""});
 }
+var router = express.Router();
+app.use('/api', router);
+router.post('/op/:id', isAuthenticated, api.op);
 
-app.use('/api',router)
+router.get('/connect/:id', isAuthenticated, api.connect);
 
-router.get('/op', isAuthenticated, api.op);
-
-router.get('/connect', isAuthenticated, api.connect);
-
-router.get('/presence', isAuthenticated, api.presence);
+router.post('/presence/:id', isAuthenticated, api.presence);
 
 app.listen(port, () => {
     console.log(`App listening on ${port}`)

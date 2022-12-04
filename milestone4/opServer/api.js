@@ -1,5 +1,6 @@
 const Y = require('yjs')
-const docMap = new Map();
+const Delta = require('quill-delta');
+const docMap = require('./db/docMap');
 let clients = new Map();
 
 connect = (req,res) => {
@@ -22,9 +23,6 @@ connect = (req,res) => {
             client.write(`event: presence\ndata: {}\n\n`)
         })
     })
-    if(docMap.get(req.params.id)){
-        docMap.set(req.params.id, new Y.Doc());
-    }
     let state = docMap.getDoc(req.params.id);
     let string = JSON.stringify(Array.from(Y.encodeStateAsUpdate(state)));
     res.write('event: sync\ndata: ' + `${string}\n\n`);
@@ -32,11 +30,12 @@ connect = (req,res) => {
 
 op = (req,res) => {
     let arr = clients.get(req.params.id);
-    Y.applyUpdate(docMap.get(req.params.id), Uint8Array.from(req.body));
+    Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
     let string = JSON.stringify(req.body);
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
+    docMap.edited(req.params.id);
     res.status(200).send("update posted");
 }
 
@@ -57,8 +56,8 @@ presence = (req,res) => {
 }
 
 
-module.exports ={
+module.exports = {
     connect,
     op,
-    presence+
+    presence
 }
