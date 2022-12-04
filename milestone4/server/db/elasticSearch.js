@@ -1,7 +1,6 @@
 const { Client } = require('@elastic/elasticsearch') 
-const docMap = require('../db/docMap'); 
 const client = new Client({
-    node: 'http://localhost:9200'
+    node: 'http://209.94.57.93:9200'
 })
 
 module.exports = client;

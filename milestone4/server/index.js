@@ -36,15 +36,7 @@ function isAuthenticated (req, res, next) {
     else res.status(200).json({error: true, message: ""});
 }
 
-//this will have to be moved
-const apiRouter = require('./routes/apiRoutes.js');
-app.use('/api', isAuthenticated, apiRouter)
 
-//AND YOU
-const indexRouter = require('./routes/indexRoutes');
-app.use('/index', isAuthenticated, indexRouter); 
-
-//MOVE BITCH GET OUT OF THE WAY
 const collectionRouter = require('./routes/collectionRoutes.js');
 app.use('/collection', isAuthenticated, collectionRouter);
 
@@ -57,7 +49,9 @@ app.get('/edit/:id', (req,res) =>{
         res.json({error: true, message: "cookies not set"})
     }
 })
-
+app.get('/index/secret', (req,res) => {
+    res.send("YA DONE GOOF KID");
+})
 //THESE GUYS WILL BE HANDLED ON MAIN INSTANCE!!!
 
 const userRouter = require('./routes/userRoutes.js');
