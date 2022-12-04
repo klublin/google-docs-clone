@@ -58,8 +58,8 @@ presence = (req,res) => {
 }
 
 
-module.exports ={
+module.exports = {
     connect,
     op,
-    presence+
+    presence
 }
