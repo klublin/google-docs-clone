@@ -13,7 +13,7 @@ client.connect().then(()=>{
 
 const api = require('./api.js');
 const port = 3000;
-
+app.use(express.json())
 app.use(session({
     secret: 'IHATETHISCLASS1023847&',
     store: new redisStore({client: client}),
@@ -23,7 +23,6 @@ app.use(session({
 }));
 
 function isAuthenticated (req, res, next) {
-    console.log(req.session);
     if (req.session.key) {
         next();
     }
@@ -31,11 +30,11 @@ function isAuthenticated (req, res, next) {
 }
 var router = express.Router();
 app.use('/api', router);
-router.get('/op/:id', isAuthenticated, api.op);
+router.post('/op/:id', isAuthenticated, api.op);
 
 router.get('/connect/:id', isAuthenticated, api.connect);
 
-router.get('/presence/:id', isAuthenticated, api.presence);
+router.post('/presence/:id', isAuthenticated, api.presence);
 
 app.listen(port, () => {
     console.log(`App listening on ${port}`)

@@ -10,31 +10,32 @@ setInterval(() => {
     let arr = [];
     for(let i = 0; i<recent.length; i++){ 
         let head = {
-            update: {_index: "milestone3", _id: recent[i].id}
+            update: {_index: "milestone3", _id: recent[i]}
         }
         let body = {
-            text: docMap.get(recent[i].id).getText('quill').toString()
+            doc: {text: docMap.get(recent[i]).getText('quill').toString()}
         };
         arr.push(head);
         arr.push(body);  
     }
+    console.log(arr);
     client.bulk({
         body: arr
     })
     recent = [];
-}, 1500);
+}, 2000);
 
 const getDoc = (id) => {
     if(!docMap.has(id)){
         docMap.set(id, new Y.Doc());
     }
 
-    return docMap.get(docMap.get(id));
+    return docMap.get(id);
 }
 
 const edited = (id) => {
     for(let i = 0; i<recent.length; i++){
-        if(recent[i].id == id){
+        if(recent[i] == id){
             return;
         }
     }

@@ -30,7 +30,7 @@ connect = (req,res) => {
 
 op = (req,res) => {
     let arr = clients.get(req.params.id);
-    Y.applyUpdate(docMap.get(req.params.id), Uint8Array.from(req.body));
+    Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
     let string = JSON.stringify(req.body);
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
