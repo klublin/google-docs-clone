@@ -6,21 +6,6 @@ const client = new Client({
 
 const cache = new Map();
 
-const parse = (arr) => {
-    let found = [];
-    let i = 0;
-    while(found.length < 10 && i<arr.length){
-        let temp = arr[i].highlight.text[0];
-        if(!arr[i].highlight.text){
-            temp = arr[i].highlight.name[0];
-        }
-        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
-        i++;
-    }
-
-    return found;
-}
-
 // updateIndex = async () => {
 //     cache.clear();
 //     let q = list.toQueue();
@@ -63,10 +48,10 @@ const parse = (arr) => {
 const search = async (req,res) => {
     console.log("SEARCH ME");
     const {q} = req.query;
-    if(cache.has(q)){
-        res.json(cache.get(q));
-        return;
-    }
+    // if(cache.has(q)){
+    //     res.json(cache.get(q));
+    //     return;
+    // }
     const result = await client.search({
         body: {
             query: {
@@ -79,7 +64,7 @@ const search = async (req,res) => {
                 fields: {
                     text: {
                         "boundary_scanner": "sentence",
-                        "fragment_size": 100
+                        "fragment_size": 0
                     },
                     name: {}
                 }
@@ -88,19 +73,19 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    if(arr.length!=0){
-        cache.set(q, thing);
-    }
+    // if(arr.length!=0){
+    //     cache.set(q, thing);
+    // }
     res.json(thing);
 }
 
 const suggest = async (req,res) => {
     console.log('SUGGEST ME');
     const {q} = req.query;
-    if(cache.has(q)){
-        res.json(cache.get(q));
-        return;
-    }
+    // if(cache.has(q)){
+    //     res.json(cache.get(q));
+    //     return;
+    // }
     const result = await client.search({
         index: "milestone3",
         body: {
@@ -122,16 +107,18 @@ const suggest = async (req,res) => {
         }
     })
     let arr = result.hits.hits;
-    let thing = parse(arr);
-    if(arr.length!=0){
-        cache.set(q, thing);
+    let thing = [];
+    for(let i = 0; i<arr.length; i++){
+        thing.push(arr[i].highlight.text[0]);
     }
+    // if(arr.length!=0){  
+    //     cache.set(q, thing);
+    // }
     res.json(thing);
 }
 
 
 secret = async (req,res) => {
-    console.log("lol");
     if(await client.indices.exists({index: "milestone3"})){
         await client.indices.delete({index: "milestone3"});
     }
