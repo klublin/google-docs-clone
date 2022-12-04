@@ -49,9 +49,6 @@ app.get('/edit/:id', (req,res) =>{
         res.json({error: true, message: "cookies not set"})
     }
 })
-app.get('/index/secret', (req,res) => {
-    res.send("YA DONE GOOF KID");
-})
 //THESE GUYS WILL BE HANDLED ON MAIN INSTANCE!!!
 
 const userRouter = require('./routes/userRoutes.js');
