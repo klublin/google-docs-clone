@@ -64,7 +64,7 @@ const search = async (req,res) => {
                 fields: {
                     text: {
                         "boundary_scanner": "sentence",
-                        "fragment_size": 100
+                        "fragment_size": 0
                     },
                     name: {}
                 }
@@ -73,9 +73,9 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    if(arr.length!=0){
-        cache.set(q, thing);
-    }
+    // if(arr.length!=0){
+    //     cache.set(q, thing);
+    // }
     res.json(thing);
 }
 
@@ -107,16 +107,18 @@ const suggest = async (req,res) => {
         }
     })
     let arr = result.hits.hits;
-    let thing = parse(arr);
-    if(arr.length!=0){
-        cache.set(q, thing);
+    let thing = [];
+    for(let i = 0; i<arr.length; i++){
+        thing.push(arr[i].highlight.text[0]);
     }
+    // if(arr.length!=0){  
+    //     cache.set(q, thing);
+    // }
     res.json(thing);
 }
 
 
 secret = async (req,res) => {
-    console.log("lol");
     if(await client.indices.exists({index: "milestone3"})){
         await client.indices.delete({index: "milestone3"});
     }
