@@ -23,9 +23,6 @@ connect = (req,res) => {
             client.write(`event: presence\ndata: {}\n\n`)
         })
     })
-    if(docMap.get(req.params.id)){
-        docMap.set(req.params.id, new Y.Doc());
-    }
     let state = docMap.getDoc(req.params.id);
     let string = JSON.stringify(Array.from(Y.encodeStateAsUpdate(state)));
     res.write('event: sync\ndata: ' + `${string}\n\n`);

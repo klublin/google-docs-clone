@@ -4,6 +4,9 @@ const client = require('./elasticClient')
 let recent = [];
 
 setInterval(() => {
+    if(recent.length == 0){
+        return;
+    }
     let arr = [];
     for(let i = 0; i<recent.length; i++){ 
         let head = {
