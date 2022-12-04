@@ -18,7 +18,6 @@ setInterval(() => {
         arr.push(head);
         arr.push(body);  
     }
-    console.log(arr);
     client.bulk({
         body: arr
     })
