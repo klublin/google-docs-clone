@@ -1,5 +1,4 @@
 const Y = require('yjs')
-const Delta = require('quill-delta');
 const docMap = new Map();
 let clients = new Map();
 
