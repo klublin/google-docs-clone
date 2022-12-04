@@ -28,9 +28,9 @@ export default function TextEditor() {
         const d = new Quill(editor, {theme: "snow", modules: {toolbar: TOOLBAR_OPTIONS}});
 
         new QuillBinding(ytext, d);
-        ydoc.on('update', zupdate => {
+        ydoc.on('update', update => {
             console.log("a");
-            fetch(`http://localhost:3001/api/op/${id}`, {
+            fetch(`http://giveten.cse356.compas.cs.stonybrook.edu/api/op/${id}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -44,7 +44,7 @@ export default function TextEditor() {
         if(doc === undefined ){
             return;
         }
-        const events = new EventSource(`http://localhost:3001/api/connect/${id}`)
+        const events = new EventSource(`http://giveten.cse356.compas.cs.stonybrook.edu/api/connect/${id}`)
         events.addEventListener('sync', (event) =>{
             let obj = JSON.parse(event.data);
             obj = Uint8Array.from(obj);
