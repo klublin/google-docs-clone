@@ -36,27 +36,17 @@ function isAuthenticated (req, res, next) {
     else res.status(200).json({error: true, message: ""});
 }
 
+//this will have to be moved
 const apiRouter = require('./routes/apiRoutes.js');
 app.use('/api', isAuthenticated, apiRouter)
 
-const userRouter = require('./routes/userRoutes.js');
-app.use('/users', userRouter);
+//AND YOU
+const indexRouter = require('./routes/indexRoutes');
+app.use('/index', isAuthenticated, indexRouter); 
 
+//MOVE BITCH GET OUT OF THE WAY
 const collectionRouter = require('./routes/collectionRoutes.js');
 app.use('/collection', isAuthenticated, collectionRouter);
-
-const mediaRouter = require('./routes/mediaRoutes');
-app.use('/media', isAuthenticated, mediaRouter);
-
-const indexRouter = require('./routes/indexRoutes');
-app.use('/index', isAuthenticated, indexRouter);        
-
-app.use(express.static("public"));
-
-app.get('/', (req,res) => {
-    console.log("hmmm");
-    res.sendFile(path.join(__dirname,'public/index.html'));
-})
 
 app.get('/edit/:id', (req,res) =>{
     console.log(req.session);
@@ -66,6 +56,21 @@ app.get('/edit/:id', (req,res) =>{
     else{
         res.json({error: true, message: "cookies not set"})
     }
+})
+
+//THESE GUYS WILL BE HANDLED ON MAIN INSTANCE!!!
+
+const userRouter = require('./routes/userRoutes.js');
+app.use('/users', userRouter);
+
+const mediaRouter = require('./routes/mediaRoutes');
+app.use('/media', isAuthenticated, mediaRouter);
+
+app.use(express.static("public"));
+
+app.get('/', (req,res) => {
+    console.log("hmmm");
+    res.sendFile(path.join(__dirname,'public/index.html'));
 })
 
 app.get('/home', (req,res) => {
