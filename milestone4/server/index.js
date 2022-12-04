@@ -41,7 +41,6 @@ const collectionRouter = require('./routes/collectionRoutes.js');
 app.use('/collection', isAuthenticated, collectionRouter);
 
 app.get('/edit/:id', (req,res) =>{
-    console.log(req.session);
     if(req.session.cookie && req.session.key){
         res.sendFile(path.join(__dirname,'public/index.html'));
     }
@@ -60,12 +59,10 @@ app.use('/media', isAuthenticated, mediaRouter);
 app.use(express.static("public"));
 
 app.get('/', (req,res) => {
-    console.log("hmmm");
     res.sendFile(path.join(__dirname,'public/index.html'));
 })
 
 app.get('/home', (req,res) => {
-    console.log("????");
     if(req.session.cookie){
         res.sendFile(path.join(__dirname, 'public/index.html'));
     }
