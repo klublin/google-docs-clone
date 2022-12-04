@@ -1,5 +1,7 @@
 let list = [];
 
+//THIS IS PROBABLY NO LONGER NEEDED
+
 //queue gives the id's of all the documents that have gotten updated and need to be put into elasticsearch
 let queue = [];
 

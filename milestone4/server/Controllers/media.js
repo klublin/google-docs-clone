@@ -22,8 +22,8 @@ uploadImage = (req,res) => {
             res.status(200).json({error: true, message: "failed to upload"});
         }
         else{
-            let ext = path.extname(req.file.filename);
-            if(ext!='.png' && ext!='.jpeg' && ext!='.jpg' && ext!='.gif'&&ext!='.img'){
+            let mime = req.file.mimetype;
+            if(ext!='img/png' && ext!='img/gif' && ext!='img/jpeg' && ext!='img/jpg'){
                 res.status(200).json({error: true, message: "wrong file type"});
             }
             else

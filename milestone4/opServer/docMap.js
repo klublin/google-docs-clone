@@ -1,34 +1,29 @@
+//THIS IS PROBABLY NO LONGER NEEDED
+
 const Y = require('yjs');
 const docMap = new Map();
 const top10 = require('./top10List');
 const client = require('../db/elasticSearch')
 
-docAdd = async (name) => {
+docAdd = (name, id) => {
     let newDoc = new Y.Doc();
-    let newText = newDoc.getText('quill');
-    let obj = {
-        name: name,
-        doc: newDoc,
-        text: newText
-    };
     let id = await client.index({
         index: "milestone3",
         body: {
             name: name,
-            text: newText
+            id: id
+            text: ""
         }
     })
-    docMap.set(id._id, obj);
+    docMap.set(id, new Y.Doc());
     
     top10.listAdd(id._id, name);
-    
-    return id._id;
 }
 
 docDelete = (deleteID) => {
     top10.listDelete(deleteID);
 
-    return docMap.delete(deleteID);
+    docMap.remove
 }
 
 getName = (nameID) => {

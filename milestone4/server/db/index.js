@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
-/*
-    This initializes the connection to our database so that we can do CRUD.
-    
-    @author McKilla Gorilla
-*/
+
+//need to change to remote ip maybe??
 mongoose
     .connect('mongodb://127.0.0.1:27017/users')
     .catch(e => {

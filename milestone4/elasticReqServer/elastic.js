@@ -1,7 +1,25 @@
-const docMap = require('../db/docMap'); 
-const list = require('../db/top10List'); 
-const client = require('../db/elasticSearch')
+const { Client } = require('@elastic/elasticsearch') 
+
+const client = new Client({
+    node: 'http://209.94.57.93:9200'
+})
+
 const cache = new Map();
+
+const parse = (arr) => {
+    let found = [];
+    let i = 0;
+    while(found.length < 10 && i<arr.length){
+        let temp = arr[i].highlight.text[0];
+        if(!arr[i].highlight.text){
+            temp = arr[i].highlight.name[0];
+        }
+        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
+        i++;
+    }
+
+    return found;
+}
 
 updateIndex = async () => {
     cache.clear();
@@ -27,24 +45,8 @@ updateIndex = async () => {
     await client.indices.refresh({index: "milestone3"});
 }
 
-const parse = (arr) => {
-    let found = [];
-    let i = 0;
-    while(found.length < 10 && i<arr.length){
-        let temp = arr[i].highlight.text[0];
-        if(!arr[i].highlight.text){
-            temp = arr[i].highlight.name[0];
-        }
-        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
-        i++;
-    }
-
-    return found;
-}
-
 const search = async (req,res) => {
     console.log("SEARCH ME");
-    updateIndex();
     const {q} = req.query;
     if(cache.has(q)){
         res.json(cache.get(q));
@@ -79,7 +81,6 @@ const search = async (req,res) => {
 
 const suggest = async (req,res) => {
     console.log('SUGGEST ME');
-    updateIndex();
     const {q} = req.query;
     if(cache.has(q)){
         res.json(cache.get(q));
