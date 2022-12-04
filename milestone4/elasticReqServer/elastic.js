@@ -21,29 +21,29 @@ const parse = (arr) => {
     return found;
 }
 
-updateIndex = async () => {
-    cache.clear();
-    let q = list.toQueue();
-    if(q.length == 0){
-        return;
-    }
-    let arr = [];
-    for(const element of q){ 
-        let head = {
-            index: {_index: "milestone3", _id: element.id}
-        }
-        let body = {
-            name: element.name,
-            text: docMap.getText(element.id)
-        };
-        arr.push(head);
-        arr.push(body);  
-    }
-    await client.bulk({
-        body: arr
-    })
-    await client.indices.refresh({index: "milestone3"});
-}
+// updateIndex = async () => {
+//     cache.clear();
+//     let q = list.toQueue();
+//     if(q.length == 0){
+//         return;
+//     }
+//     let arr = [];
+//     for(const element of q){ 
+//         let head = {
+//             index: {_index: "milestone3", _id: element.id}
+//         }
+//         let body = {
+//             name: element.name,
+//             text: docMap.getText(element.id)
+//         };
+//         arr.push(head);
+//         arr.push(body);  
+//     }
+//     await client.bulk({
+//         body: arr
+//     })
+//     await client.indices.refresh({index: "milestone3"});
+// }
 
 const search = async (req,res) => {
     console.log("SEARCH ME");
@@ -116,6 +116,7 @@ const suggest = async (req,res) => {
 
 
 secret = async (req,res) => {
+    console.log("lol");
     if(await client.indices.exists({index: "milestone3"})){
         await client.indices.delete({index: "milestone3"});
     }
