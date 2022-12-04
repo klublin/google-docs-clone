@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 //need to change to remote ip maybe??
 mongoose
-    .connect('mongodb://127.0.0.1:27017/users')
+    .connect('mongodb://194.113.75.76:27017/users')
     .catch(e => {
         console.error('Connection error', e.message)
     })

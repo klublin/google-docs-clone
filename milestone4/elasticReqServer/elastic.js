@@ -6,29 +6,44 @@ const client = new Client({
 
 const cache = new Map();
 
-updateIndex = async () => {
-    cache.clear();
-    let q = list.toQueue();
-    if(q.length == 0){
-        return;
-    }
-    let arr = [];
-    for(const element of q){ 
-        let head = {
-            index: {_index: "milestone3", _id: element.id}
+const parse = (arr) => {
+    let found = [];
+    let i = 0;
+    while(found.length < 10 && i<arr.length){
+        let temp = arr[i].highlight.text[0];
+        if(!arr[i].highlight.text){
+            temp = arr[i].highlight.name[0];
         }
-        let body = {
-            name: element.name,
-            text: docMap.getText(element.id)
-        };
-        arr.push(head);
-        arr.push(body);  
+        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
+        i++;
     }
-    await client.bulk({
-        body: arr
-    })
-    await client.indices.refresh({index: "milestone3"});
+
+    return found;
 }
+
+// updateIndex = async () => {
+//     cache.clear();
+//     let q = list.toQueue();
+//     if(q.length == 0){
+//         return;
+//     }
+//     let arr = [];
+//     for(const element of q){ 
+//         let head = {
+//             index: {_index: "milestone3", _id: element.id}
+//         }
+//         let body = {
+//             name: element.name,
+//             text: docMap.getText(element.id)
+//         };
+//         arr.push(head);
+//         arr.push(body);  
+//     }
+//     await client.bulk({
+//         body: arr
+//     })
+//     await client.indices.refresh({index: "milestone3"});
+// }
 
 const parse = (arr) => {
     let found = [];
@@ -116,6 +131,7 @@ const suggest = async (req,res) => {
 
 
 secret = async (req,res) => {
+    console.log("lol");
     if(await client.indices.exists({index: "milestone3"})){
         await client.indices.delete({index: "milestone3"});
     }
