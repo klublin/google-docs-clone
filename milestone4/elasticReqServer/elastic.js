@@ -141,7 +141,8 @@ secret = async (req,res) => {
                     analyzer: "my_analyzer",
                     "index_prefixes": {
                         "min_chars": 3
-                    }
+                    },
+                    "index_options" : "offsets"
                 },
                 name: {
                     type: "text",
