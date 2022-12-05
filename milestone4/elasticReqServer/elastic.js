@@ -61,11 +61,11 @@ const search = async (req,res) => {
                 }
             },
             highlight: {
+                type: "plain",
                 fields: {
                     text: {
-                        "boundary_scanner": "sentence",
-                        "fragment_size": 2000
-                    },
+			"fragment_size": 250
+			},
                     name: {}
                 }
             }
