@@ -46,7 +46,6 @@ const parse = (arr) => {
 }
 
 const search = async (req,res) => {
-    console.log("SEARCH ME");
     const {q} = req.query;
 // if(cache.has(q)){
     //     res.json(cache.get(q));
@@ -81,7 +80,6 @@ const search = async (req,res) => {
 }
 
 const suggest = async (req,res) => {
-    console.log('SUGGEST ME');
     const {q} = req.query;
     // if(cache.has(q)){
     //     res.json(cache.get(q));
