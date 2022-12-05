@@ -63,7 +63,7 @@ const search = async (req,res) => {
             highlight: {
                 fields: {
                     text: {
-                        "boundary_scanner": "sentence",
+                        "number_of_fragments": 1,
                         "fragment_size": 0
                     },
                     name: {}
