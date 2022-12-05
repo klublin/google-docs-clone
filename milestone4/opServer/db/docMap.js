@@ -22,7 +22,7 @@ setInterval(() => {
         body: arr
     })
     recent = [];
-}, 2000);
+}, 3000);
 
 const getDoc = (id) => {
     if(!docMap.has(id)){
