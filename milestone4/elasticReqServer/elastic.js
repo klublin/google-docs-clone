@@ -64,8 +64,8 @@ const search = async (req,res) => {
                 type: "plain",
                 fields: {
                     text: {
-			"boundary_scanner": "sentence",
-			"fragment_size": 600
+//			"boundary_scanner": "sentence",
+			"fragment_size": 650
 			},
                     name: {}
                 }
