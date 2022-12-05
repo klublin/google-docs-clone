@@ -61,7 +61,7 @@ const search = async (req,res) => {
                 }
             },
             highlight: {
-                type: "plain",
+//                type: "plain",
                 fields: {
                     text: {
 			"boundary_scanner": "sentence",
