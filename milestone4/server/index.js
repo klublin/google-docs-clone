@@ -4,8 +4,12 @@ const redis = require('redis');
 const session = require('express-session')
 const redisStore = require('connect-redis')(session);
 const client  = redis.createClient({
-    legacyMode: true
+    legacyMode: true, 
+    url: 'redis://194.113.75.76:6379'
 });
+client.connect().then(()=>{
+    console.log("connected to Redis!");
+})
 const path = require('path');
 
 client.connect().then(()=>{
@@ -23,7 +27,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.set('trust proxy', true);
 app.use(session({
     secret: 'IHATETHISCLASS1023847&',
-    store: new redisStore({ host: 'localhost', port: 6379, client: client}),
+    store: new redisStore({client: client}),
     saveUninitialized: true,
     resave: false,
     cookie: {sameSite: true }
