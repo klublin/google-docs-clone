@@ -119,7 +119,7 @@ secret = async (req,res) => {
             "analysis": {
                 "filter": {
                     "length_filter": {type: "length", min: 4}
-                }
+                },
                 "analyzer": {
                     "my_analyzer": {
                         "tokenizer": "whitespace",
