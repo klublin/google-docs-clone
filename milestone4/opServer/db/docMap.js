@@ -26,7 +26,7 @@ setInterval(() => {
         body: arr
     })
     recent = [];
-}, 1500);
+}, 2000);
 
 const getDoc = (id) => {
     if(!docMap.has(id)){
