@@ -126,6 +126,7 @@ secret = async (req,res) => {
                         "filter": [ "stop", "kstem", "lowercase", "length_filter"]
                     },
                     "length": {
+                        "type": "standard",
                         "filter": ["length_filter"]
                     }
                 }
