@@ -11,11 +11,6 @@ client.connect().then(()=>{
     console.log("connected to Redis!");
 })
 const path = require('path');
-
-client.connect().then(()=>{
-    console.log("connected to Redis!");
-});
-
 // CREATE OUR SERVER
 const app = express()
 app.use(express.static('public'));
