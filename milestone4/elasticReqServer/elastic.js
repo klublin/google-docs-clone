@@ -50,17 +50,17 @@ const search = async (req,res) => {
     // }
     const result = await client.search({
         body: {
+            "_source": false,
             query: {
                 "match": {
-		    "text": q
-		}
+		            "text": q
+		        }
             },
             highlight: {
                 fields: {
                     text: {
-//			"boundary_scanner": "sentence",
-			"fragment_size": 30
-			}
+			            "fragment_size": 30
+			        }
                 }
             }
         }
@@ -83,32 +83,26 @@ const suggest = async (req,res) => {
     const result = await client.search({
         index: "milestone3",
         body: {
-            query: {
-                prefix: {
-                    text: q
-                }
-            },
-            highlight: {
-                fields: {
-                    text: {
-                        "boundary_scanner": "word",
-                        "pre_tags": "",
-                        "post_tags": ""
+            "_source": false,
+            suggest: {
+                "mySuggestion": {
+                    prefix: q,
+                    completion: {
+                        field: "suggest",
+                        size: 5
                     }
                 }
             }
-            
         }
     })
-    let arr = result.hits.hits;
-    let thing = [];
-    for(let i = 0; i<arr.length; i++){
-        thing.push(arr[i].highlight.text[0]);
-    }
-    // if(arr.length!=0){  
-    //     cache.set(q, thing);
-    // }
-    res.json(thing);
+    let arr = result.suggest.mySuggestion[0].options;
+
+    let done = [];
+
+    arr.forEach(element => {
+        done.push(element.text);
+    })
+    res.json(done);
 }
 
 
@@ -119,16 +113,22 @@ secret = async (req,res) => {
     await client.indices.create({
         index: "milestone3",
         "settings": {
-	    "index": {
-		refresh_interval: '2s'
-	    },
+	        "index": {
+		        refresh_interval: '1.5s'
+	        },
             "analysis": {
-              "analyzer": {
-                "my_analyzer": {
-                  "tokenizer": "whitespace",
-                  "filter": [ "stop", "kstem", "lowercase" ]
+                "filter": {
+                    "length_filter": {type: "length", min: 4}
                 }
-              }
+                "analyzer": {
+                    "my_analyzer": {
+                        "tokenizer": "whitespace",
+                        "filter": [ "stop", "kstem", "lowercase", "length_filter"]
+                    },
+                    "length": {
+                        "filter": ["length_filter"]
+                    }
+                }
             }
         },
         mappings: {
@@ -137,6 +137,10 @@ secret = async (req,res) => {
                     type: "text",
                     analyzer: "my_analyzer",
                     "term_vector": "with_offsets"
+                },
+                suggest: {
+                    type: "completion",
+                    analyzer: "length"
                 }
             }
         }

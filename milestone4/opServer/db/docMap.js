@@ -9,11 +9,15 @@ setInterval(() => {
     }
     let arr = [];
     for(let i = 0; i<recent.length; i++){ 
+        let str = docMap.get(recent[i]).getText('quill').toString();
         let head = {
             update: {_index: "milestone3", _id: recent[i]}
         }
         let body = {
-            doc: {text: docMap.get(recent[i]).getText('quill').toString()}
+            doc: {
+                text: str,
+                suggest: str.split(/[\n ]+/)
+            }
         };
         arr.push(head);
         arr.push(body);  
@@ -22,7 +26,7 @@ setInterval(() => {
         body: arr
     })
     recent = [];
-}, 3000);
+}, 1500);
 
 const getDoc = (id) => {
     if(!docMap.has(id)){
