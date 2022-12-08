@@ -118,7 +118,6 @@ secret = async (req,res) => {
     }
     await client.indices.create({
         index: "milestone3",
-	'refresh_interval': '3s',
         "settings": {
             "analysis": {
               "analyzer": {
