@@ -62,18 +62,19 @@ const search = async (req,res) => {
                 fields: {
                     text: {
 //			"boundary_scanner": "sentence",
-			"fragment_size": 100
+			"fragment_size": 30
 			}
                 }
             }
         }
     })
+    res.json(result.hits.hits);
     let arr = result.hits.hits;
     let thing = parse(arr);
     // if(arr.length!=0){
     //     cache.set(q, thing);
     // }
-    res.json(thing);
+    //res.json(thing);
 }
 
 const suggest = async (req,res) => {
