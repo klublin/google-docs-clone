@@ -50,7 +50,7 @@ const search = async (req,res) => {
     // }
     const result = await client.search({
         body: {
-            "_source": false,
+            "_source": "name",
             query: {
                 "match": {
 		            "text": q
@@ -67,7 +67,7 @@ const search = async (req,res) => {
     })
     res.json(result.hits.hits);
     let arr = result.hits.hits;
-//    let thing = parse(arr);
+    let thing = parse(arr);
     // if(arr.length!=0){
     //     cache.set(q, thing);
     // }
@@ -83,7 +83,7 @@ const suggest = async (req,res) => {
     const result = await client.search({
         index: "milestone3",
         body: {
-            "_source": false,
+            "_source": "name",
             suggest: {
                 "mySuggestion": {
                     prefix: q,
@@ -142,6 +142,9 @@ secret = async (req,res) => {
                 suggest: {
                     type: "completion",
                     analyzer: "length"
+                },
+                name: {
+                    type: "text"
                 }
             }
         }
