@@ -38,7 +38,7 @@ const parse = (arr) => {
         temp+=arr[i].highlight.text[0];
         i++;
     }
-    found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
+    found.push({docid: arr[0]._id, name: arr[0]._source.name, snippet: temp});
     return found;
 }
 
