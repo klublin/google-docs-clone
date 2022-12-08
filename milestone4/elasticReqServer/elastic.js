@@ -55,9 +55,8 @@ const search = async (req,res) => {
         body: {
             query: {
                 "match": {
-                    query: q,
-                    fields: "text"
-                }
+		    "text": q
+		}
             },
             highlight: {
                 fields: {
