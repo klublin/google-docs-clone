@@ -14,8 +14,7 @@ createDoc = async (req,res) => {
         index: "milestone3",
         id: id,
         body: {
-            name: name,
-            text: ""
+            
         }
     })
     res.status(200).json({id: String(id)});
