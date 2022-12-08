@@ -67,7 +67,7 @@ const search = async (req,res) => {
     })
     res.json(result.hits.hits);
     let arr = result.hits.hits;
-    let thing = parse(arr);
+//    let thing = parse(arr);
     // if(arr.length!=0){
     //     cache.set(q, thing);
     // }
