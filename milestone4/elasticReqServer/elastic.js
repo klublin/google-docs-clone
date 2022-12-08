@@ -54,19 +54,17 @@ const search = async (req,res) => {
     const result = await client.search({
         body: {
             query: {
-                "multi_match": {
+                "match": {
                     query: q,
-                    fields: ["text", "name"]
+                    fields: "text"
                 }
             },
             highlight: {
-                type: "plain",
                 fields: {
                     text: {
 //			"boundary_scanner": "sentence",
-			"fragment_size": 1000
-			},
-                    name: {}
+			"fragment_size": 30
+			}
                 }
             }
         }
@@ -137,15 +135,8 @@ secret = async (req,res) => {
             properties: {
                 text: {
                     type: "text",
-                    analyzer: "my_analyzer",
-                    "index_prefixes": {
-                        "min_chars": 3
-                    },
-                    "index_options" : "offsets"
-                },
-                name: {
-                    type: "text",
                     analyzer: "my_analyzer"
+                    "term_vector": "with_offsets"
                 }
             }
         }
