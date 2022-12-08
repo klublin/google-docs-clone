@@ -135,7 +135,7 @@ secret = async (req,res) => {
             properties: {
                 text: {
                     type: "text",
-                    analyzer: "my_analyzer"
+                    analyzer: "my_analyzer",
                     "term_vector": "with_offsets"
                 }
             }
