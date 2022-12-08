@@ -33,15 +33,12 @@ const cache = new Map();
 const parse = (arr) => {
     let found = [];
     let i = 0;
-    while(found.length < 10 && i<arr.length){
-        let temp = arr[i].highlight.text[0];
-        if(!arr[i].highlight.text){
-            temp = arr[i].highlight.name[0];
-        }
-        found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
+    let temp = "";
+    while(i<arr.length){
+        temp+=arr[i].highlight.text[0];
         i++;
     }
-
+    found.push({docid: arr[i]._id, name: arr[i]._source.name, snippet: temp});
     return found;
 }
 
