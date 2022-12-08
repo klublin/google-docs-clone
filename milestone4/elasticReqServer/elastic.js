@@ -121,7 +121,7 @@ secret = async (req,res) => {
         "settings": {
 	    "index": {
 		refresh_interval: '3s'
-	    }
+	    },
             "analysis": {
               "analyzer": {
                 "my_analyzer": {
