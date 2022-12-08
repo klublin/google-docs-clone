@@ -5,7 +5,7 @@ const session = require('express-session')
 const redisStore = require('connect-redis')(session);
 const client  = redis.createClient({
     legacyMode: true, 
-    url: 'redis://209.151.155.129:6379'
+    url: 'redis://194.113.75.76'
 });
 client.connect().then(()=>{
     console.log("connected to Redis!");
