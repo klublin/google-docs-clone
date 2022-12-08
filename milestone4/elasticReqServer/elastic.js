@@ -34,8 +34,8 @@ const parse = (arr) => {
     let found = [];
     let i = 0;
     let temp = "";
-    while(i<arr.length){
-        temp+=arr[i].highlight.text[0];
+    while(i<arr[0].highlight.text.length){
+        temp+=arr[0].highlight.text[i];
         i++;
     }
     found.push({docid: arr[0]._id, name: arr[0]._source.name, snippet: temp});
