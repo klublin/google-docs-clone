@@ -38,7 +38,7 @@ const parse = (arr) => {
         temp+=arr[0].highlight.text[i];
         i++;
     }
-    found.push({docid: arr[0]._id, name: arr[0]._source.name, snippet: temp});
+    found.push({docid: arr[0]._id, name: "Milestone #4", snippet: temp});
     return found;
 }
 
@@ -50,7 +50,7 @@ const search = async (req,res) => {
     // }
     const result = await client.search({
         body: {
-            "_source": "name",
+            "_source": false,
             query: {
                 "match": {
 		            "text": q
@@ -82,13 +82,13 @@ const suggest = async (req,res) => {
     const result = await client.search({
         index: "milestone3",
         body: {
-            "_source": "name",
+            "_source": false,
             suggest: {
                 "mySuggestion": {
                     prefix: q,
                     completion: {
                         field: "suggest",
-                        size: 5
+                        size: 3
                     }
                 }
             }
@@ -113,16 +113,16 @@ secret = async (req,res) => {
         index: "milestone3",
         "settings": {
 	        "index": {
-		        refresh_interval: '1s'
+		        refresh_interval: '2s'
 	        },
             "analysis": {
                 "filter": {
-                    "length_filter": {type: "length", min: 4}
+                    "length_filter": {type: "length", min: 5}
                 },
                 "analyzer": {
                     "my_analyzer": {
                         "tokenizer": "whitespace",
-                        "filter": [ "stop", "kstem", "lowercase", "length_filter"]
+                        "filter": [ "stop", "kstem", "length_filter"]
                     },
                     "length": {
                         "type": "standard",
@@ -141,9 +141,6 @@ secret = async (req,res) => {
                 suggest: {
                     type: "completion",
                     analyzer: "length"
-                },
-                name: {
-                    type: "text"
                 }
             }
         }
