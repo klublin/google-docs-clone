@@ -113,7 +113,8 @@ secret = async (req,res) => {
         index: "milestone3",
         "settings": {
 	        "index": {
-		        refresh_interval: '30s'
+		        refresh_interval: '30s',
+                "number_of_replicas":1
 	        },
             "analysis": {
                 "filter": {
