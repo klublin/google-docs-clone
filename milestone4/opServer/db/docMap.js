@@ -12,6 +12,7 @@ const helper = (arr) => {
             set.add(element);
         }
     })
+
     return found;
 }
 
