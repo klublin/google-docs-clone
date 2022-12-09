@@ -90,11 +90,8 @@ const search = async (req,res) => {
 const suggest = async (req,res) => {
     const {q} = req.query;
     console.log(q);
-    const check = await memcached.get(q);
+    const check = memcached.get(q);
     console.log(check);
-    if(check!== undefined){
-        res.json(check);
-    }
     if(check!== undefined){
         res.json(check);
     }
