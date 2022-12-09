@@ -50,7 +50,7 @@ const search = async (req,res) => {
     const buffer = await memcached.get(q);
     if(buffer.value!== null){
         let response = JSON.parse(buffer.value.toString());
-        res.json(buffer.value);
+        res.json(response);
         return;
     }
     const result = await client.search({
@@ -82,7 +82,7 @@ const suggest = async (req,res) => {
     const buffer = await memcached.get(q);
     if(buffer.value!== null){
         let response = JSON.parse(buffer.value.toString());
-        res.json(buffer.value);
+        res.json(response);
         return;
     }
     const result = await client.search({
