@@ -120,7 +120,7 @@ const suggest = async (req,res) => {
     arr.forEach(element => {
         done.push(element.text);
     })
-    memcached.set(q, thing, 5, function(err){
+    memcached.set(q, done, 5, function(err){
         if(err) console.log(err);
     });
     res.json(done);
