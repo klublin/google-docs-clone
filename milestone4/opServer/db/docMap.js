@@ -5,12 +5,13 @@ let recent = [];
 
 const helper = (arr) => {
     let found = [];
+    const set = new Set();
     arr.forEach(element=> {
-        if(found.indexOf(element)===-1 && element.length>4){
+        if(element.length > 4 && !set.has(element)){
             found.push(element);
+            set.add(element);
         }
     })
-
     return found;
 }
 
