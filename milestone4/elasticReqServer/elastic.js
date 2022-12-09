@@ -78,7 +78,6 @@ const search = async (req,res) => {
 
 const suggest = async (req,res) => {
     const {q} = req.query;
-    console.log(q);
     const buffer = await memcached.get(q);
     if(buffer.value!== null){
         let response = JSON.parse(buffer.value.toString());
@@ -107,7 +106,6 @@ const suggest = async (req,res) => {
     arr.forEach(element => {
         done.push(element.text);
     })
-    console.log(done);
     await memcached.set(q, JSON.stringify(done), {expires: 5});
     res.json(done);
 }
