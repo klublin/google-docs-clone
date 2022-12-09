@@ -1,7 +1,15 @@
 const { Client } = require('@elastic/elasticsearch') 
+const Memcached = require('memcached');
 
 const client = new Client({
     node: 'http://209.94.57.93:9200'
+})
+
+var memcached = new Memcached();
+
+memcached.connect('194.113.75.76:11211', function(err, conn){
+    if(err) console.log(err);
+    else console.log('Connected to Memcached!');
 })
 
 const cache = new Map();
@@ -44,10 +52,11 @@ const parse = (arr) => {
 
 const search = async (req,res) => {
     const {q} = req.query;
-// if(cache.has(q)){
-    //     res.json(cache.get(q));
-    //     return;
-    // }
+    const check = await memcached.get(q);
+    console.log(check);
+    if(check!=undefined){
+        res.json(check);
+    }
     const result = await client.search({
         body: {
             "_source": false,
@@ -67,18 +76,17 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    // if(arr.length!=0){
-    //     cache.set(q, thing);
-    // }
+    await memcached.set(q, thing, 5);
     res.json(thing);
 }
 
 const suggest = async (req,res) => {
     const {q} = req.query;
-    // if(cache.has(q)){
-    //     res.json(cache.get(q));
-    //     return;
-    // }
+    const check = await memcached.get(q);
+    console.log(check);
+    if(check!=undefined){
+        res.json(check);
+    }
     const result = await client.search({
         index: "milestone3",
         body: {
@@ -101,6 +109,7 @@ const suggest = async (req,res) => {
     arr.forEach(element => {
         done.push(element.text);
     })
+    await memcached.set(q, done, 5);
     res.json(done);
 }
 
