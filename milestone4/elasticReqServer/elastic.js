@@ -80,9 +80,11 @@ const suggest = async (req,res) => {
     const {q} = req.query;
     console.log(q);
     const buffer = await memcached.get(q);
-    buffer = JSON.parse(buffer.toString());
-    console.log(buffer);
     if(buffer.value!== null){
+        console.log(buffer);
+        console.log("after parse");
+        buffer = JSON.parse(buffer.toString());
+        console.log(buffer);
         res.json(buffer.value);
         return;
     }
