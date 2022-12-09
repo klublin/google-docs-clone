@@ -10,13 +10,6 @@ createDoc = async (req,res) => {
     let id = idStart[Math.floor(Math.random()*26)] + " " + uuidv4();
     list.splice(0,0,{id: id, name: name});
     console.log(id);
-    await client.index({
-        index: "milestone3",
-        id: id,
-        body: {
-            
-        }
-    })
     res.status(200).json({id: String(id)});
 
 }

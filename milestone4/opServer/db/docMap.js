@@ -3,6 +3,17 @@ const docMap = new Map();
 const client = require('./elasticClient')
 let recent = [];
 
+const helper = (arr) => {
+    let found = [];
+    arr.forEach(element=> {
+        if(found.indexOf(element)===-1 && element.length>4){
+            found.push(element);
+        }
+    })
+
+    return found;
+}
+
 setInterval(() => {
     if(recent.length == 0){
         return;
@@ -11,13 +22,11 @@ setInterval(() => {
     for(let i = 0; i<recent.length; i++){ 
         let str = docMap.get(recent[i]).getText('quill').toString();
         let head = {
-            update: {_index: "milestone3", _id: recent[i]}
+            index: {_index: "milestone3", _id: recent[i]}
         }
         let body = {
-            doc: {
-                text: str,
-                suggest: str.split(/[\n ]+/)
-            }
+            text: str,
+            suggest: helper(str.split(/[\n ]+/))
         };
         arr.push(head);
         arr.push(body);  
@@ -48,5 +57,4 @@ const edited = (id) => {
 module.exports = {
     getDoc,
     edited
-
 }
