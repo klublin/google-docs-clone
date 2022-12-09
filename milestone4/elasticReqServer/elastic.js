@@ -5,7 +5,7 @@ const client = new Client({
     node: 'http://209.94.57.93:9200'
 })
 
-var memcached = new Memcached();
+var memcached = new Memcached('194.113.75.76:11211');
 
 memcached.connect('194.113.75.76:11211', function(err, conn){
     if(err) {
