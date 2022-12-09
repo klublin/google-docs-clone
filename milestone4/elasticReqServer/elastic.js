@@ -84,37 +84,48 @@ const search = async (req,res) => {
 
 const suggest = async (req,res) => {
     const {q} = req.query;
-    const check = await memcached.get(q);
-    console.log(check);
-    if(check!== undefined){
-        res.json(check);
-    }
-    const result = await client.search({
-        index: "milestone3",
-        body: {
-            "_source": false,
-            suggest: {
-                "mySuggestion": {
-                    prefix: q,
-                    completion: {
-                        field: "suggest",
-                        size: 3
-                    }
-                }
-            }
+    console.log(q);
+    memcached.get(q, function(err, data){
+        if(err) console.log(err);
+        if(data!== undefined){
+            res.json(data);
+        }
+        else{
+            memcached.set(q, "HIIIII", 5, function(err){
+                if(err) console.log(err);
+            })
+            res.json("got it boss!");
         }
     })
-    let arr = result.suggest.mySuggestion[0].options;
-
-    let done = [];
-
-    arr.forEach(element => {
-        done.push(element.text);
-    })
-    memcached.set(q, done, 5, function(err){
-        if(err) console.log(err);
-    });
-    res.json(done);
+    // if(check!== undefined){
+    //     res.json(check);
+    // }
+    // const result = await client.search({
+    //     index: "milestone3",
+    //     body: {
+    //         "_source": false,
+    //         suggest: {
+    //             "mySuggestion": {
+    //                 prefix: q,
+    //                 completion: {
+    //                     field: "suggest",
+    //                     size: 3
+    //                 }
+    //             }
+    //         }
+    //     }
+    // })
+    // let arr = result.suggest.mySuggestion[0].options;
+    //
+    // let done = [];
+    //
+    // arr.forEach(element => {
+    //     done.push(element.text);
+    // })
+    // memcached.set(q, thing, 5, function(err){
+    //     if(err) console.log(err);
+    // });
+    // res.json(done);
 }
 
 
