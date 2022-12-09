@@ -1,21 +1,11 @@
 const { Client } = require('@elastic/elasticsearch') 
-const Memcached = require('memcached');
+const memjs = require('memjs')
 
 const client = new Client({
     node: 'http://209.94.57.93:9200'
 })
 
-var memcached = new Memcached('194.113.75.76:11211');
-
-memcached.connect('194.113.75.76:11211', function(err, conn){
-    if(err) {
-        console.log("THIS IS AN ERROR PLEASE SCREAM");
-        console.log(err);
-    }
-    else{
-        console.log('Connected to Memcached!');
-    } 
-})
+var memcached = memjs.Client.create('194.113.75.76:11211');
 
 const cache = new Map();
 
@@ -81,16 +71,14 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    memcached.set(q, thing, 5, function(err){
-        if(err) console.log(err);
-    });
+    await memcached.set(q, thing, {expires: 5});
     res.json(thing);
 }
 
 const suggest = async (req,res) => {
     const {q} = req.query;
     console.log(q);
-    const check = memcached.get(q);
+    const check = await memcached.get(q);
     console.log(check);
     if(check!== undefined){
         res.json(check);
@@ -117,9 +105,7 @@ const suggest = async (req,res) => {
     arr.forEach(element => {
         done.push(element.text);
     })
-    memcached.set(q, done, 5, function(err){
-        if(err) console.log(err);
-    });
+    await memcached.set(q, done, {expires: 5});
     res.json(done);
 }
 
