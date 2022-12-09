@@ -47,10 +47,10 @@ const parse = (arr) => {
 
 const search = async (req,res) => {
     const {q} = req.query;
-    const check = await memcached.get(q).value;
-    console.log(check);
-    if(check!== null){
-        res.json(check);
+    const buffer = await memcached.get(q);
+    if(buffer.value!== null){
+        let response = JSON.parse(buffer.value.toString());
+        res.json(buffer.value);
         return;
     }
     const result = await client.search({
@@ -72,7 +72,7 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    await memcached.set(q, thing, {expires: 5});
+    await memcached.set(q, JSON.stringify(done), {expires: 5});
     res.json(thing);
 }
 
@@ -108,7 +108,7 @@ const suggest = async (req,res) => {
         done.push(element.text);
     })
     console.log(done);
-    await memcached.set(q, JSON.stringify(done));
+    await memcached.set(q, JSON.stringify(done), {expires, 5});
     res.json(done);
 }
 
