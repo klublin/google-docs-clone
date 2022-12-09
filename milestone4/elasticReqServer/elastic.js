@@ -54,7 +54,7 @@ const search = async (req,res) => {
     const {q} = req.query;
     const check = await memcached.get(q);
     console.log(check);
-    if(check!=undefined){
+    if(check!== undefined){
         res.json(check);
     }
     const result = await client.search({
@@ -86,7 +86,7 @@ const suggest = async (req,res) => {
     const {q} = req.query;
     const check = await memcached.get(q);
     console.log(check);
-    if(check!=undefined){
+    if(check!== undefined){
         res.json(check);
     }
     const result = await client.search({
@@ -111,7 +111,9 @@ const suggest = async (req,res) => {
     arr.forEach(element => {
         done.push(element.text);
     })
-    await memcached.set(q, done, 5);
+    memcached.set(q, thing, 5, function(err){
+        if(err) console.log(err);
+    });
     res.json(done);
 }
 
