@@ -108,7 +108,7 @@ const suggest = async (req,res) => {
         done.push(element.text);
     })
     console.log(done);
-    await memcached.set(q, JSON.stringify(done), {expires, 5});
+    await memcached.set(q, JSON.stringify(done), {expires: 5});
     res.json(done);
 }
 
