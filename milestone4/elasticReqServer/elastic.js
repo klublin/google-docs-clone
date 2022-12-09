@@ -47,9 +47,9 @@ const parse = (arr) => {
 
 const search = async (req,res) => {
     const {q} = req.query;
-    const check = await memcached.get(q);
+    const check = await memcached.get(q).value;
     console.log(check);
-    if(check!== undefined){
+    if(check!== null){
         res.json(check);
         return;
     }
@@ -79,9 +79,9 @@ const search = async (req,res) => {
 const suggest = async (req,res) => {
     const {q} = req.query;
     console.log(q);
-    const check = await memcached.get(q);
+    const check = await memcached.get(q).value;
     console.log(check);
-    if(check!== undefined){
+    if(check!== null){
         res.json(check);
         return;
     }
