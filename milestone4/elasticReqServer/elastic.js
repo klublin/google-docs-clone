@@ -124,10 +124,6 @@ secret = async (req,res) => {
                     "my_analyzer": {
                         "tokenizer": "whitespace",
                         "filter": [ "stop", "kstem", "length_filter"]
-                    },
-                    "length": {
-                        "type": "standard",
-                        "filter": ["length_filter"]
                     }
                 }
             }
@@ -140,8 +136,7 @@ secret = async (req,res) => {
                     "term_vector": "with_offsets"
                 },
                 suggest: {
-                    type: "completion",
-                    analyzer: "length"
+                    type: "completion"
                 }
             }
         }
