@@ -8,8 +8,13 @@ const client = new Client({
 var memcached = new Memcached();
 
 memcached.connect('194.113.75.76:11211', function(err, conn){
-    if(err) console.log(err);
-    else console.log('Connected to Memcached!');
+    if(err) {
+        console.log("THIS IS AN ERROR PLEASE SCREAM");
+        console.log(err);
+    }
+    else{
+        console.log('Connected to Memcached!');
+    } 
 })
 
 const cache = new Map();
