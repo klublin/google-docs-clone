@@ -76,7 +76,9 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    await memcached.set(q, thing, 5);
+    memcached.set(q, thing, 5, function(err){
+        if(err) console.log(err);
+    });
     res.json(thing);
 }
 
