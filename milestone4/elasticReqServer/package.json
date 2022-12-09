@@ -14,6 +14,7 @@
     "elastic.js": "^1.2.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "memcached": "^2.2.2",
     "redis": "^4.5.1"
   }
 }
