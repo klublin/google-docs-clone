@@ -51,6 +51,7 @@ const search = async (req,res) => {
     console.log(check);
     if(check!== undefined){
         res.json(check);
+        return;
     }
     const result = await client.search({
         body: {
@@ -82,6 +83,7 @@ const suggest = async (req,res) => {
     console.log(check);
     if(check!== undefined){
         res.json(check);
+        return;
     }
     const result = await client.search({
         index: "milestone3",
