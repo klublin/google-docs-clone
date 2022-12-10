@@ -11,7 +11,7 @@ const client = new Client({
     }
 })
 
-client.info().then(response => console.log(response)).catch(error => console.log(error));
+client.info().then(response => console.log("connected to ES cloud!")).catch(error => console.log(error));
 
 var memcached = memjs.Client.create('194.113.75.76:11211');
 
