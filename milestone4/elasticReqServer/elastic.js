@@ -42,6 +42,9 @@ const cache = new Map();
 // }
 
 const parse = (arr) => {
+    if(!arr[0]){
+	return [];
+    }
     let found = [];
     let i = 0;
     let temp = "";
