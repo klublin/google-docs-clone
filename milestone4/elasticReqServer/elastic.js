@@ -127,7 +127,7 @@ secret = async (req,res) => {
         index: "milestone3",
         "settings": {
 	        "index": {
-		        refresh_interval: '30s',
+		        refresh_interval: '20s',
                 "number_of_replicas": 0,
                 "store": {
                     "preload": ["nvd", "dvd", "tim", "doc", "dim"]  
