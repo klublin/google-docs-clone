@@ -80,7 +80,7 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    await memcached.set(q, JSON.stringify(done), {expires: 5});
+    await memcached.set(q, JSON.stringify(thing), {expires: 5});
     res.json(thing);
 }
 
