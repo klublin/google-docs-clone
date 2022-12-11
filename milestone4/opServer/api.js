@@ -29,14 +29,14 @@ connect = (req,res) => {
 }
 
 op = (req,res) => {
-    let arr = clients.get(req.params.id);
     Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
+    docMap.edited(req.params.id);
+    res.status(200).send("update posted");
+    let arr = clients.get(req.params.id);
     let string = JSON.stringify(req.body);
     for(let i = 0; i<arr.length; i++){
         arr[i].write('event: update\ndata: ' + `${string}\n\n`);
     } 
-    docMap.edited(req.params.id);
-    res.status(200).send("update posted");
 }
 
 presence = (req,res) => {
