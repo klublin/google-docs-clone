@@ -1,11 +1,11 @@
 const { Client } = require('@elastic/elasticsearch') 
 const memjs = require('memjs')
 
-const client = new Client({ node: 'http://209.151.155.111:9200'})
+const client = new Client({ node: 'http://209.94.56.105:9200'})
 
 client.info().then(response => console.log("connected to ES cloud!")).catch(error => console.log(error));
 
-var memcached = memjs.Client.create('194.113.75.76:11211');
+var memcached = memjs.Client.create('194.113.75.0:11211');
 
 const cache = new Map();
 
