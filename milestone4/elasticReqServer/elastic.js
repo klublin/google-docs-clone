@@ -83,7 +83,7 @@ const search = async (req,res) => {
     })
     let arr = result.hits.hits;
     let thing = parse(arr);
-    await memcached.set(q, JSON.stringify(thing), {expires: 5});
+    await memcached.set(q, JSON.stringify(thing), {expires: 10});
     res.json(thing);
 }
 
@@ -117,7 +117,7 @@ const suggest = async (req,res) => {
     arr.forEach(element => {
         done.push(element.text);
     })
-    await memcached.set(q, JSON.stringify(done), {expires: 5});
+    await memcached.set(q, JSON.stringify(done), {expires: 10});
     res.json(done);
 }
 
