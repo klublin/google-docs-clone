@@ -29,7 +29,6 @@ connect = (req,res) => {
 }
 
 op = (req,res) => {
-console.log("heyyy");
     Y.applyUpdate(docMap.getDoc(req.params.id), Uint8Array.from(req.body));
     docMap.edited(req.params.id);
     res.status(200).send("update posted");
